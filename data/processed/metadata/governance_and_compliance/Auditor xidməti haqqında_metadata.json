@@ -1,0 +1,12 @@
+{
+  "document_id": "Auditor xidməti haqqında",
+  "title": "Auditor xidməti haqqında",
+  "category": "governance_and_compliance",
+  "source_file": "Auditor xidməti haqqında.pdf",
+  "processed_file": "Auditor xidməti haqqında.md",
+  "total_pages": 12,
+  "total_chunks": 25,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.153521"
+}

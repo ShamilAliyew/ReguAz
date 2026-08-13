@@ -1,0 +1,27 @@
+{
+  "document_id": "doc_6a4b900a685899bd5b75c41e",
+  "status": "success",
+  "profile": "REGULATION",
+  "profiles_detected": [
+    "REGULATION",
+    "TABLE_OR_FORM",
+    "DECISION_OR_AMENDMENT"
+  ],
+  "parent_count": 21,
+  "child_count": 255,
+  "atomic_unit_count": 256,
+  "table_count": 0,
+  "unclassified_node_count": 1,
+  "unresolved_reference_count": 5,
+  "duplicate_chunk_count": 0,
+  "min_tokens": 34,
+  "median_tokens": 89,
+  "p95_tokens": 171,
+  "max_tokens": 306,
+  "quality_flags": [
+    "cross_page_split",
+    "unclassified_structure",
+    "unresolved_reference"
+  ],
+  "errors": []
+}

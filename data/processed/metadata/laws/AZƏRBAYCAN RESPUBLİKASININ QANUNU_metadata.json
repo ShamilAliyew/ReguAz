@@ -1,0 +1,12 @@
+{
+  "document_id": "AZƏRBAYCAN RESPUBLİKASININ QANUNU",
+  "title": "AZƏRBAYCAN RESPUBLİKASININ QANUNU",
+  "category": "laws",
+  "source_file": "AZƏRBAYCAN RESPUBLİKASININ QANUNU.pdf",
+  "processed_file": "AZƏRBAYCAN RESPUBLİKASININ QANUNU.md",
+  "total_pages": 10,
+  "total_chunks": 114,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.063355"
+}

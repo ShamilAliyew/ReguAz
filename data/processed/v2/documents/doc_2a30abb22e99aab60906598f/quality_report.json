@@ -1,0 +1,25 @@
+{
+  "document_id": "doc_2a30abb22e99aab60906598f",
+  "status": "success",
+  "profile": "REGULATION",
+  "profiles_detected": [
+    "REGULATION",
+    "GUIDANCE"
+  ],
+  "parent_count": 8,
+  "child_count": 15,
+  "atomic_unit_count": 15,
+  "table_count": 0,
+  "unclassified_node_count": 1,
+  "unresolved_reference_count": 0,
+  "duplicate_chunk_count": 0,
+  "min_tokens": 82,
+  "median_tokens": 102,
+  "p95_tokens": 165,
+  "max_tokens": 165,
+  "quality_flags": [
+    "cross_page_split",
+    "unclassified_structure"
+  ],
+  "errors": []
+}

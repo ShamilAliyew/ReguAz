@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+
+# Jupyter
+.ipynb_checkpoints/
+
+
+data/chroma/*
+data/qdrant/*
+backend/qdrant_data/
+
+backend/reguaz/models/.env
+backend/reguaz/models/
+data/qdrant/
+data/processed/v2/embeddings/
+data/processed/v2/qdrant/
+data/evaluation/*.xlsx
+results/
+logs/
+backend/reguaz/logs/
+
+
+# Dependencies
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+frontend/.vite/
+
+# Environment
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.production.local
+!frontend/.env.example
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# Coverage
+frontend/coverage/
+
+# Cache
+frontend/.eslintcache

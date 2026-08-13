@@ -1,0 +1,12 @@
+{
+  "document_id": "Valyuta tənzimi haqqında",
+  "title": "Valyuta tənzimi haqqında",
+  "category": "aml_kyc",
+  "source_file": "Valyuta tənzimi haqqında.pdf",
+  "processed_file": "Valyuta tənzimi haqqında.md",
+  "total_pages": 26,
+  "total_chunks": 143,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.170208"
+}

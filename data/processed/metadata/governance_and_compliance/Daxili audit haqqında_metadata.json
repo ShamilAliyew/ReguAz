@@ -1,0 +1,12 @@
+{
+  "document_id": "Daxili audit haqqında",
+  "title": "Daxili audit haqqında",
+  "category": "governance_and_compliance",
+  "source_file": "Daxili audit haqqında.pdf",
+  "processed_file": "Daxili audit haqqında.md",
+  "total_pages": 7,
+  "total_chunks": 21,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.130426"
+}

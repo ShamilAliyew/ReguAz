@@ -1,0 +1,12 @@
+{
+  "document_id": "Məcəllə",
+  "title": "Məcəllə",
+  "category": "aml_kyc",
+  "source_file": "Məcəllə.pdf",
+  "processed_file": "Məcəllə.md",
+  "total_pages": 28,
+  "total_chunks": 37,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.166985"
+}

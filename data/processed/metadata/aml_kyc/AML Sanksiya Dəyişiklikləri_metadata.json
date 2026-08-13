@@ -1,0 +1,12 @@
+{
+  "document_id": "AML Sanksiya Dəyişiklikləri",
+  "title": "AML Sanksiya Dəyişiklikləri",
+  "category": "aml_kyc",
+  "source_file": "AML Sanksiya Dəyişiklikləri.pdf",
+  "processed_file": "AML Sanksiya Dəyişiklikləri.md",
+  "total_pages": 4,
+  "total_chunks": 6,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.160457"
+}

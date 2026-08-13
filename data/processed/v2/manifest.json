@@ -1,0 +1,444 @@
+{
+  "schema_version": "2.0",
+  "corpus_version": "v2-0800591c80fd07bd",
+  "chunker_name": "adaptive-structure-aware-hierarchical",
+  "chunker_version": "2.0.0",
+  "parser_name": "reguaz-structure-parser",
+  "parser_version": "2.0.0",
+  "tokenizer_id": "BAAI/bge-m3",
+  "approximate_tokenizer": false,
+  "chunk_size_configuration": {
+    "minimum_target": 60,
+    "preferred_min": 180,
+    "preferred_max": 320,
+    "hard_maximum": 450,
+    "parent_preferred_min": 600,
+    "parent_preferred_max": 1200,
+    "parent_maximum": 1500
+  },
+  "input_root": "/Users/samil/Desktop/AI:ML/banking-regulatory-intelligence-platform/data/processed/cleaned_documents",
+  "output_root": "/Users/samil/Desktop/AI:ML/banking-regulatory-intelligence-platform/data/processed/v2",
+  "discovered_document_count": 96,
+  "successful_document_count": 96,
+  "failed_document_count": 0,
+  "duplicate_document_count": 0,
+  "parent_count": 5847,
+  "child_count": 17729,
+  "chunk_type_distribution": {
+    "atomic_unit": 17218,
+    "clause_group": 381,
+    "table_row_group": 130
+  },
+  "document_profile_distribution": {
+    "DECISION_OR_AMENDMENT": 1,
+    "GUIDANCE": 1,
+    "LEGAL_ACT": 16,
+    "REGULATION": 75,
+    "TABLE_OR_FORM": 3
+  },
+  "token_distribution": {
+    "minimum": 18,
+    "median": 97,
+    "p95": 261,
+    "maximum": 447
+  },
+  "unresolved_reference_count": 3602,
+  "unclassified_structure_count": 95,
+  "quality_flag_distribution": {
+    "cross_page_split": 84,
+    "duplicate_content": 10,
+    "heading_footnote_separated": 2,
+    "low_text_quality": 1,
+    "oversized_atomic_unit": 13,
+    "unclassified_structure": 95,
+    "unresolved_reference": 69
+  },
+  "source_manifest": [
+    {
+      "source_relative_path": "aml_kyc/096312ee-c41c-4c1f-9edd-baf5f3187758.md",
+      "source_sha256": "e1f513aa9db55d018ab90e222581e7372d3a7fb5d45da769aac6525a5a1fe0a8"
+    },
+    {
+      "source_relative_path": "aml_kyc/AML Sanksiya Dəyişiklikləri.md",
+      "source_sha256": "ed21b5702adf8fd54b511a0a5e7fca7e80370e55149aaa5eed1697dcf903709d"
+    },
+    {
+      "source_relative_path": "aml_kyc/Cinayət yolu ilə əldə edilmiş əmlakın leqallaşdırılmasına və terrorçuluğun maliyyələşdirilməsinə qarşı mübarizə haqqında.md",
+      "source_sha256": "eee8c6e4ce07a48bf65ec01cd5d2f4a201378dd9d5368cdbbb349eaccb39668e"
+    },
+    {
+      "source_relative_path": "aml_kyc/Müştəri Uyğunluğu və Risk Qiymətləndirməsi Qaydaları.md",
+      "source_sha256": "6490f2c500dcfbf8106bbb89a3e7a946dad02f0623e185ab3021faffe3eb090a"
+    },
+    {
+      "source_relative_path": "aml_kyc/Məcəllə.md",
+      "source_sha256": "0be0a3a951c5c728ad0f7e1cd537515fcff93b4873a21667df099866a7fa34cd"
+    },
+    {
+      "source_relative_path": "aml_kyc/Valyuta tənzimi haqqında.md",
+      "source_sha256": "b8e7a400958b74af099f669a6f8bd9cfa7517a312f44ff264af1633ebca950a1"
+    },
+    {
+      "source_relative_path": "aml_kyc/ad29955c-5a37-413c-937e-cd1e5988ae62.md",
+      "source_sha256": "767b7b27037c9b2008a0f8f4013aaadfabe4873aacf101005d85a5e14df5c9b3"
+    },
+    {
+      "source_relative_path": "aml_kyc/d290a5c47f251d932318feaec.md",
+      "source_sha256": "f03ad52418dfafb61497fb19834a6e9b66b65904e7f0b9c197bf8c572b5c2b62"
+    },
+    {
+      "source_relative_path": "aml_kyc/Öhdəlik daşıyan şəxslərin daxili nəzarət proqramının cavab verməli olduğu minimum Tələblər.md",
+      "source_sha256": "edd7749c7f70b2bb5dbed8d5fdfa5fd35e7653d254a16a73c5debaade1e7c195"
+    },
+    {
+      "source_relative_path": "aml_kyc/“Qiymətli kağızlar bazarında sui-istifadələrin qarşısının alınması haqqında Qaydalar”ın təsdiq edilməsi barədə.md",
+      "source_sha256": "fe252a89e0c63372c2cc5eff990e421655a5d297e564e6a8ea2136d788d6a402"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/04957d78-5ed1-477c-9d32-2ed4797154e4.md",
+      "source_sha256": "9a6d787614fe4e861ee50d24bf71fa8300eb1eb0cf163144d810192a6175d173"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/45937180-250a-4b4a-b8e5-153945adb06d.md",
+      "source_sha256": "a3399999b2d722fd60fb67e14b72aed5bb96c160f906d46fe575a45f04c00f8a"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/50c0f6d30754ffa78df0070e8.md",
+      "source_sha256": "b96f99c6b2497998042d34eb527f77e9b6bad5f139f2ae2626f3815ca3558df3"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/9018b71b0859bc7a490ea0f22.md",
+      "source_sha256": "309c4fa93a65b95e7f52ba3035b193f615c8173a0a19f658078aa4678ea007e0"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/Auditor xidməti haqqında.md",
+      "source_sha256": "1a8e4860a2ca7d936989dee6e360c89c2a9ca1fe272fc9762e352df2d24580fc"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/Azərbaycan Respublikası Prezidentinin Fərmanı.md",
+      "source_sha256": "0e151594c6986d17e28706622e9bf91c18d87f975776a52acb7f94a840d25c22"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/Azərbaycan Respublikasının Mərkəzi Bankı - Maliyyə institutlarında istehlakçıların şikayətlərinə baxılmasına dair Metodoloji Rəhbərlik.md",
+      "source_sha256": "2ab2e7e29538491669dd5cafe0dc602f32eda414446b652a4f56199c297404e4"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/Banklarda korporativ idarəetmə Standartları.md",
+      "source_sha256": "c5b9e48b51873ce2dd6de143fda9fa47062b3f6793702dfcf1f39f7620d29594"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/Daxili audit haqqında.md",
+      "source_sha256": "51639c1bf225bb2930e4e09a7e31a37b124bddb3b33b1dd97ab57f575ddf6aa9"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/Nizamnamə kapitalında dövlətə məxsus səhmlər olan bankların və bank olmayan kredit təşkilatlarının idarə edilməsində dövlətin iştirakı qaydası haqqında.md",
+      "source_sha256": "af4aa58d2324678adb354f0947a6b1759361f2d0b13931f8a6b457d28684da33"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/beaf2f3b-d7c9-4377-8d69-d29758699119.md",
+      "source_sha256": "510bda04ae3cf2c1833e1826795038d4acd8e510a1232d7ba0902e53258fe627"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/d6a9834a-d9f7-49f3-abff-14cd901c615d.md",
+      "source_sha256": "c0148284cadc2c5af1d00906a57ce7d65ccfdb7e5885f16d9d34093d2238aca3"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/İstehlakçıların hüquqlarının müdafiəsi haqqında.md",
+      "source_sha256": "3035b9031b330f8a6a607611947a94773f2b281bafdc6fe998311232ed78c07a"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/“Azərbaycan Respublikası Mərkəzi Bankının normativ xarakterli aktlarının hazırlanması və qəbul edilməsi Qaydası”nın təsdiq edilməsi barədə.md",
+      "source_sha256": "4fc281e36e66a356787f866f9402b204520922fba2eea7796a2045316c28c3ae"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/“Azərbaycan Respublikasının bank sistemində arxiv işinin aparılması haqqında Təlimat”ın təsdiq edilməsi barədə.md",
+      "source_sha256": "fcb31af553284e66730f70587323f6c1fab036ef148efc78336cd32b0d09de4d"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/“Bankların yenidən təşkili haqqında Qaydalar”ın təsdiq edilməsi barədə.md",
+      "source_sha256": "efcdab3c6ee5643a723c52f81fd9eac897c821fa059ba27a88b20a0a2b743816"
+    },
+    {
+      "source_relative_path": "governance_and_compliance/“Kredit ittifaqına bank əməliyyatının həyata keçirilməsi üçün lisenziya verilməsi Qaydası”nın təsdiq edilməsi haqqında.md",
+      "source_sha256": "728beda42330102beaccff63a04a0ceead18d3ae327e620fc8e4e95b0a68962d"
+    },
+    {
+      "source_relative_path": "guidance_and_methodology/Azərbaycan Respublikasının Mərkəzi Bankı - Maliyyə xidmətləri sahəsində tənzimləyici çərçivənin hazırlıq səviyyəsinin təhlili.md",
+      "source_sha256": "579154248311d90c613c541fad31a4f493831a77f7cfc2e7d916aacea6303d9c"
+    },
+    {
+      "source_relative_path": "guidance_and_methodology/dc1546b51b6aa6b3d92409836.md",
+      "source_sha256": "8a63d9c4172225aeb4ec2141e2186b9dae70ebc25f1769948ab0cb67b1bbd7fa"
+    },
+    {
+      "source_relative_path": "guidance_and_methodology/feeb62eb12b5c144caa99818e.md",
+      "source_sha256": "2b8155f8547abfbbb3218b20446c8dc9c56e82b0a8d4853b91ae78f979ad72e4"
+    },
+    {
+      "source_relative_path": "laws/402 _Azərbaycan Respublikasının Milli Bankı haqqında_ Azərbaycan Respublikası Qanununun tətbiq edilməsi barədə.md",
+      "source_sha256": "4bd0d94036d8efddf15a6d25cf37e720bb64d9fd39f35f919b9dd668cc248180"
+    },
+    {
+      "source_relative_path": "laws/590-IIQ-Banklar haqqında.md",
+      "source_sha256": "bcd55d2117b137769e3b7b1ffde4d0771d88df1fbfd216aa8ac13dad9c98c677"
+    },
+    {
+      "source_relative_path": "laws/802-IIQ-Azərbaycan Respublikasının Mərkəzi Bankı haqqında.md",
+      "source_sha256": "5969b42e818323037dc2bcda4ba21fc480d30fdbde6881f806d4c9517aa03662"
+    },
+    {
+      "source_relative_path": "laws/933-IIIQ-Bank olmayan kredit təşkilatları haqqında.md",
+      "source_sha256": "12b403580fad0bb98fcc7a89143d76afb4de347826a4a4f9c330194656dfd735"
+    },
+    {
+      "source_relative_path": "laws/AZƏRBAYCAN RESPUBLİKASININ QANUNU.md",
+      "source_sha256": "b05a062fd53d384295fa53d0af4e865afd2ccab280976286e874ed345d2d9654"
+    },
+    {
+      "source_relative_path": "laws/Banklar Haqqında Qanun.md",
+      "source_sha256": "61f3db5429394e7b9ab0bc2f90808044b98d3017691d570f2abd543dce24f916"
+    },
+    {
+      "source_relative_path": "laws/_Banklar haqqında_ Azərbaycan Respublikası Qanununun tətbiq edilməsi barədə.md",
+      "source_sha256": "8fb2b41121f9101441c26736dc237b8e77e399dc48e9ea434797e7e03f7f9da0"
+    },
+    {
+      "source_relative_path": "laws/Əmanətlərin sığortalanması haqqında.md",
+      "source_sha256": "1ec35c120d56f78b8a75c688f3b523a6354eede8232cadec149bc2cb177ec6b5"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/4a6fbf3ba5bf66fda98b121c7.md",
+      "source_sha256": "5479592ce6cf2f0dcb3d14f60f6948032448e1511c97fbe898ef8add5d644d32"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/64b6f05f-196b-4894-9374-9e5c1c4df7a2.md",
+      "source_sha256": "0e88ac6b96cf24012adab0716e7a7dcddae431a033cff10cf8e7db0dbe0eb5ea"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/9abef96e-dec9-4c51-b763-8ccf4e23afdd.md",
+      "source_sha256": "fbf4b9bdc93f8af08455ebb47b30a52ce439deafcb24f468ced9b83caa6cc838"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/Azərbaycan Respublikasının 1999-cu il 22 iyun tarixli 689-IQ nömrəli Qanunu ilə təsdiq edilmiş «Ədalət mühakiməsinin rəsmi embleminin təsviri»ndə dəyişiklik edilməsi barədə.md",
+      "source_sha256": "736c4fe62de45fee1144f697b35dff416f54d9f3fcab5a99a19ee566b497b913"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/Azərbaycan Respublikasının Mərkəzi Bankı - Azərbaycan Respublikasında elektron bankçılıq xidmətlərinin göstərilməsinə və bu xidmətlər üzrə təhlükəsizliyin təmin olunmasına dair Metodoloji Rəhbərlik.md",
+      "source_sha256": "9b5f8c377d757b9b76f2ace5d79861855ea01ff25ebac47f1380531a7bfe28f6"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/Azərbaycan Respublikasının Mərkəzi Bankı - Azərbaycan Respublikasının bank sistemində ödəniş vasitələrinin maliyyə hesabatlarında uçotu Qaydaları.md",
+      "source_sha256": "674b4d96bbfed71c827f1d9b18c7aac20fbfc35d6f4081260bba60a03de755f6"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/Azərbaycan Respublikasının Mərkəzi Bankı - Sənədləşdirilmiş emissiya qiymətli kağızların sertifikatlarının məcburi rekvizitləri.md",
+      "source_sha256": "8ba83d0e3755756135e2238e61f2016f9250a7d47bc57e2a904eee0502095679"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/Bank Hesabları Qaydası.md",
+      "source_sha256": "f8a7f204825ebb5f31388a8032dbe254d1aa5288bd7a8fc8c4af49d220ddf8ca"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/Bank Şöbələri və Valyuta Qaydası.md",
+      "source_sha256": "fa2cf1b666982dc08443e14b2d1e8c6cc55ead615aba398c339dcda509679bad"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/Dənizkənarı Bulvar İdarəsinin fəaliyyətinin təmin edilməsi haqqında.md",
+      "source_sha256": "c5cb584f98c9b53ded0f262ea01ac47f13dfb9ebf9e6800386053a359903565d"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/c8ef8b99-7b1c-442c-bf14-1f015ec0cc8e.md",
+      "source_sha256": "848316b3b0b2f2e4d26002907b29cb41284606d3e99d3196981a797b99f9e15b"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/dd1aa268-4de2-48ab-8953-c87d3f1c74e3.md",
+      "source_sha256": "a6f7cc5901ff3c0ff81e423b1af5bf7e7a67b70ad8c6a3fde56d29ad6bc9491f"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/İstehlak krediti müqaviləsi üzrə standart məlumatlandırma forması.md",
+      "source_sha256": "82f2e1352e8d74d70c1dd145f09d6ec22b2e32d0d73232832d7e550b390e4ce1"
+    },
+    {
+      "source_relative_path": "payments_and_banking_operations/“İnvestisiya qiymətli kağızlarının qiymətinin sabitləşdirilməsi haqqında Qaydalar”ın təsdiq edilməsi barədə.md",
+      "source_sha256": "70b9dd44e904d1e7dea1617b998e9e78a8926c50f6f811d681e43fe1bc33ad68"
+    },
+    {
+      "source_relative_path": "prudential_regulations/009aa733c2e8a69d2ccc41bf4.md",
+      "source_sha256": "d965ed04f314865e19531db2db2aa6fd348c209812c68eade0a4490248bd6f47"
+    },
+    {
+      "source_relative_path": "prudential_regulations/Azərbaycan Respublikasının Mərkəzi Bankı - Bankların əsas vəsaitlərlə (əmlakla) apardıqları əməliyyatların tənzimlənməsi Qaydaları.md",
+      "source_sha256": "6927ad48ec6f13cbab028b9355a9bda2e079e4cced12b5034789b77913e9dc6c"
+    },
+    {
+      "source_relative_path": "prudential_regulations/_Dövlət qeydiyyatına alınmışdır_.md",
+      "source_sha256": "133f3867d44198e0ff242200bc01281c995c70a21097739d6658b291ec580edb"
+    },
+    {
+      "source_relative_path": "prudential_regulations/a416bd5767831ef5222712ecd.md",
+      "source_sha256": "c75028679349f89382a36d75895bd4ab22cd0f940358199025607a36d61e7210"
+    },
+    {
+      "source_relative_path": "prudential_regulations/“Kredit ittifaqlarının prudensial tənzimlənməsi Qaydaları”nın təsdiq edilməsi haqqında.md",
+      "source_sha256": "215c49d38dcd7a0c02204c246bd8f2d9d0905ca3a010c4cfaa66c67855940dcc"
+    },
+    {
+      "source_relative_path": "prudential_regulations/“Qiymətli kağızlar bazarında lisenziyalaşdırılan şəxslərin nizamnamə kapitalının minimum miqdarı və onun formalaşdırılması haqqında Qaydalar”ın təsdiq edilməsi barədə.md",
+      "source_sha256": "d1860d67b6f84deffb2f36fc755b059d42b9ad6d4add5501e365230bd4e4fc4f"
+    },
+    {
+      "source_relative_path": "prudential_regulations/“İnvestisiya şirkətinin davamlı kapital tələbləri haqqında Qaydalar”ın təsdiq edilməsi barədə.md",
+      "source_sha256": "412595d49e1f09f38fb97d7492085178fa242e35a289cf7e0291a412d571773c"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/05dc79d9-43f7-4a71-aa62-709a43c03f7d.md",
+      "source_sha256": "37486fbad173b1f67d093b0aaa85aa30662c6b502e1d9155133ed297ecdad8aa"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/3df76b8c-0902-46c3-86d9-7274e5a85bfa.md",
+      "source_sha256": "59272af2e87d8270f0957c6f5f2ab02c29bcb75a3efa2ef3b9f0b6727efdfb7a"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/93968292987fc27975a90fcfd.md",
+      "source_sha256": "cb0a7c170b659c0a3404cffc4fefc7aeb995faf0e9bb56c475eed4d95427c212"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/Azərbaycan Respublikası Prezidentinin Fərmanı.md",
+      "source_sha256": "1cda4385f6b37aa076ed91457943c80f34752f019cf1eb5179ccdf9364784624"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/Azərbaycan Respublikasının Mərkəzi Bankı - Azərbaycan Respublikasının Bank sistemində əmanətlərin (depozitlərin) uçot Qaydaları.md",
+      "source_sha256": "0f5af31ad06e67ac08c2fc58724214cb78b3008f8b31bb12eff0c1e0d7ceff28"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/_Dövlət qeydiyyatına alınmışdır.md",
+      "source_sha256": "842562371030e0070abb818c15fdd7fd30ae01dbd0b4ad9688e7b3441cda8102"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/«Dövlət qeydiyyatına alınmışdır».md",
+      "source_sha256": "90ea02b3a7c429d3847c71c3dff4e6b57119f2dd5fc513e53b1f8dccfe55af1e"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/“Azərbaycan Respublikası rezidentlərinin qeyri-rezidentlərlə maliyyə əməliyyatlarına və neytral əməliyyatlara dair hesabatın tərtibi və təqdim edilməsi haqqında Təlimat”ın təsdiq edilməsi barədə.md",
+      "source_sha256": "578823f7be669ec1f4b74a34f2e06c8cc0af9392462287c7c1759763e3610c8b"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/“Dövlət qeydiyyatına alınmışdır.md",
+      "source_sha256": "d1c82cede9af0a614856e50322d607f0ce48d8d484d3169a2f5bd2f47a4887bc"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/“Dövlət qeydiyyatına alınmışdır”.md",
+      "source_sha256": "b3d243fc4569a5a51ec36ad1856ea46ace950b4669222580b9fcd7bae6754935"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/“Emitentin istiqraz buraxılışının maksimum həcminə dair tələblər haqqında Qayda”nın təsdiq edilməsi barədə.md",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/“Fiziki şəxslərin bank hesablarından Azərbaycan Respublikasından kənara köçürülən xarici valyuta haqqında statistik hesabatın tərtibi və təqdim edilməsinə dair Təlimat”ın təsdiq edilməsi barədə.md",
+      "source_sha256": "eeec40a86fd54e07030c934e3070829d290ab7050bf5a9db92ba04476ae930ab"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/“QEYDƏ ALINMIŞDIR” “TƏSDİQ EDİRƏM”.md",
+      "source_sha256": "de97025ae119de5b8a7ccdfed9be3c8d4fa72be125d1d9bd44374c6e1332ddef"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/“QEYDƏ ALINMIŞDIR”.md",
+      "source_sha256": "814efd7aaed80d23e55b655d4ff415095de8f2ee698b5252b07dfcd1024ad9a9"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/“Qiymətli kağızlar bazarında lisenziyalaşdırılan şəxslərin kənar auditorlarına dair tələblər haqqında Qaydalar”ın təsdiq edilməsi barədə.md",
+      "source_sha256": "ba9bc8726527b7cd9574a129da93f4cef1e2da033112ce02fee77927747d70ca"
+    },
+    {
+      "source_relative_path": "reporting_and_audit/“İpoteka örtüyünün reyestrinin aparılması və sərəncamçı tərəfindən ipoteka örtüyünün yoxlanılmasının nəticələri barədə hesabata dair tələblər haqqında Qaydalar”ın təsdiq edilməsi barədə.md",
+      "source_sha256": "e19e4f6306f76753d72d31e61da843897f923c65d71238f7eb2a8dcfb79dad36"
+    },
+    {
+      "source_relative_path": "risk_management/09b9304488242be054f8c2eb6.md",
+      "source_sha256": "2a9c23e1f445c73dd900b126b8b94d1e58068031620a9a62f0a617a523b60970"
+    },
+    {
+      "source_relative_path": "risk_management/1db1173040cd0364af5d7f0d2.md",
+      "source_sha256": "7e4daaad6ad6414d329bb442056c499f176c5189751840b01f19cdba2e227416"
+    },
+    {
+      "source_relative_path": "risk_management/1dfb892e-6204-4404-9166-c861f06996fa.md",
+      "source_sha256": "e803fb18cf382b4e90b52b92b24c3f3b38b86ee576213d6c5d6f8552b8abce49"
+    },
+    {
+      "source_relative_path": "risk_management/1e1594e275bb96ef2c75aa1e8.md",
+      "source_sha256": "db1fed14a28caf48b885307a5ae1c5500cfb9ebb326b60ca27b6750524a76847"
+    },
+    {
+      "source_relative_path": "risk_management/511cdc58f232d5d9395551ae8.md",
+      "source_sha256": "3419cf2e7c71dc000ebda207a17acc6cd0f78784f3b5b22a3b1c6fd96121d25e"
+    },
+    {
+      "source_relative_path": "risk_management/58696c0de75462383dba38398.md",
+      "source_sha256": "1460f9e324a53da2f12443813762ea647b48af4f16dc888171bfcd3a85b13159"
+    },
+    {
+      "source_relative_path": "risk_management/5b725bb224d33e2085294c793.md",
+      "source_sha256": "ff4b932cf3513ada1394a4fd2a53aec94a5e43a29183c62bb0879a1be75cf4eb"
+    },
+    {
+      "source_relative_path": "risk_management/6c51a485-6986-4257-b6e0-25475732f1dc.md",
+      "source_sha256": "1cb4c10aa7de2c0aeb33dc44b0c9db771108b4072b2479b917d64e669eed9a55"
+    },
+    {
+      "source_relative_path": "risk_management/7fd12f0749b180441d54cd4de.md",
+      "source_sha256": "e1c0e35d7c1e7f1399be2cdd1001ef8f590f562627369926a494b1e831256050"
+    },
+    {
+      "source_relative_path": "risk_management/8a4d0220-9312-4ef2-88e8-c65b607a186a.md",
+      "source_sha256": "56523cb95c6dcf8967eaf9674586d415ca5085a929be4146145560f6d07e555a"
+    },
+    {
+      "source_relative_path": "risk_management/98a6608d0eb4e83b612fde01f.md",
+      "source_sha256": "2d608061bc9769a961670206dd6abdb16ac44ba193f01dc2fdee256d8b9474ae"
+    },
+    {
+      "source_relative_path": "risk_management/Azərbaycan Respublikası Prezidentinin 1999-cu il 14 may tarixli 130 nömrəli Fərmanı ilə təsdiq edilmiş «Azərbaycan Respublikasının fəxri adları haqqında Əsasnamə»də dəyişikliklər edilməsi barədə.md",
+      "source_sha256": "65346b9f9eafec5247851d6c37eda7364be9313225d8d882a2b3a34a6036b918"
+    },
+    {
+      "source_relative_path": "risk_management/Banklarda əməliyyat risklərinin idarə edilməsi Qaydası.md",
+      "source_sha256": "cf5c12db37d04472bd98f9ff3a0e6d1b2c1c7506b7c5759923b0e9347afaa254"
+    },
+    {
+      "source_relative_path": "risk_management/ba0d73daa9275fa1fe1e4694b.md",
+      "source_sha256": "34fa50dcb10cc07e2827103f84ea898cd55d06563fb02080deb9b16aded06096"
+    },
+    {
+      "source_relative_path": "risk_management/baab9bc790127f849f8ac1040.md",
+      "source_sha256": "c669e7b5541898f7284c64c2858dfa060b3a31d7fda06e107caca518af0d2feb"
+    },
+    {
+      "source_relative_path": "risk_management/dc1546b51b6aa6b3d92409836.md",
+      "source_sha256": "93a67ec95a8cb4a01c490600c2be1c538b585a0f9ec97bd9af15a3e071c7b892"
+    },
+    {
+      "source_relative_path": "risk_management/f15fd85d-3c4e-4d87-aa78-8367ca166daf.md",
+      "source_sha256": "5a4ff363a7ce466e22fa763b67dca401c2ac6c17f53b34db6486d8443a78b3aa"
+    },
+    {
+      "source_relative_path": "risk_management/faa09ce5-3d98-48b1-ac48-e81ca3d9d4e7.md",
+      "source_sha256": "c03632bad8d81ef0f265eb1dc22fc40058bb112c5d06b8392304b361efded81a"
+    },
+    {
+      "source_relative_path": "risk_management/İnformasiya Sistemlərinin Təhlükəsizliyi Qaydaları.md",
+      "source_sha256": "383d70b6986d8f210e7592935bb2bf46464b64d17e5591b014931f56d770ea67"
+    },
+    {
+      "source_relative_path": "risk_management/Əməliyyat Risklərinin İdarə Edilməsi Qaydası.md",
+      "source_sha256": "b949829292ea75d9ad810f9f4db761248711e1d0d34abc89ccd253c249f12164"
+    },
+    {
+      "source_relative_path": "risk_management/“Ödəmə qabiliyyətini itirmiş bankların rezolyusiyası və sağlamlaşdırma tədbirləri çərçivəsində qeyri-işlək (toksik) aktivlərin təqdim edilməsi Qaydası”nın təsdiq edilməsi haqqında.md",
+      "source_sha256": "2868ed78bca46820d75778e202701e3f8fda77d04c5f75925349f0cb9143c564"
+    }
+  ],
+  "failures": [],
+  "build_timestamp": "2026-08-03T10:52:34.007396Z"
+}

@@ -1,0 +1,29 @@
+{
+  "document_id": "doc_d16ddc33f034e208fff4c6d1",
+  "status": "success",
+  "profile": "LEGAL_ACT",
+  "profiles_detected": [
+    "LEGAL_ACT",
+    "REGULATION",
+    "GUIDANCE",
+    "TABLE_OR_FORM",
+    "DECISION_OR_AMENDMENT"
+  ],
+  "parent_count": 43,
+  "child_count": 336,
+  "atomic_unit_count": 339,
+  "table_count": 0,
+  "unclassified_node_count": 1,
+  "unresolved_reference_count": 112,
+  "duplicate_chunk_count": 0,
+  "min_tokens": 27,
+  "median_tokens": 85,
+  "p95_tokens": 147,
+  "max_tokens": 254,
+  "quality_flags": [
+    "cross_page_split",
+    "unclassified_structure",
+    "unresolved_reference"
+  ],
+  "errors": []
+}

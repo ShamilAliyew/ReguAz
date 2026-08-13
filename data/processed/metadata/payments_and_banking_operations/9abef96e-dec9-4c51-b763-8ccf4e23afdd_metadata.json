@@ -1,0 +1,12 @@
+{
+  "document_id": "9abef96e-dec9-4c51-b763-8ccf4e23afdd",
+  "title": "9abef96e-dec9-4c51-b763-8ccf4e23afdd",
+  "category": "payments_and_banking_operations",
+  "source_file": "9abef96e-dec9-4c51-b763-8ccf4e23afdd.pdf",
+  "processed_file": "9abef96e-dec9-4c51-b763-8ccf4e23afdd.md",
+  "total_pages": 5,
+  "total_chunks": 8,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.050703"
+}

@@ -1,0 +1,27 @@
+{
+  "document_id": "doc_d20f85a9bb8491f1555eda7d",
+  "status": "success",
+  "profile": "TABLE_OR_FORM",
+  "profiles_detected": [
+    "GUIDANCE",
+    "TABLE_OR_FORM",
+    "DECISION_OR_AMENDMENT"
+  ],
+  "parent_count": 31,
+  "child_count": 63,
+  "atomic_unit_count": 66,
+  "table_count": 0,
+  "unclassified_node_count": 1,
+  "unresolved_reference_count": 0,
+  "duplicate_chunk_count": 1,
+  "min_tokens": 25,
+  "median_tokens": 84,
+  "p95_tokens": 440,
+  "max_tokens": 445,
+  "quality_flags": [
+    "cross_page_split",
+    "duplicate_content",
+    "unclassified_structure"
+  ],
+  "errors": []
+}

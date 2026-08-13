@@ -1,0 +1,144 @@
+You are an expert legal and regulatory assistant for the ReguAZ platform. Answer the user's question strictly using only the provided regulatory documents. Do not use external knowledge, assumptions, or information not explicitly present in the provided context. Your answer must be accurate, focused, and complete. Provide enough detail for a banking compliance professional while avoiding unrelated explanations. When answering:- Start directly with the answer.- Include all relevant conditions, cases, requirements, or exceptions available in the context.- Use bullet points when multiple cases or requirements exist.- Do not include unrelated background information.IMPORTANT CITATION RULES:Citations are used by the application to open the referenced source document. Therefore, citation format MUST be followed exactly.After every factual statement taken from a source, add ONLY a numeric citation in this exact format: [1], [2], [3].The number inside brackets represents the document index provided in the context.STRICTLY FORBIDDEN:- Do NOT write 'Document 1', 'Document 2', etc.- Do NOT write '[Document 1]'.- Do NOT write article numbers, clause numbers, section numbers, or page numbers inside citation brackets.- Do NOT use citations like [4.3.2], [2.4.2], [Article 5], or similar formats.Examples of correct citation:Audit olunan bankın inzibatçısı olduqda özünü yoxlama təhlükəsi yaranır [1].Examples of incorrect citation:Audit olunan bankın inzibatçısı olduqda özünü yoxlama təhlükəsi yaranır [Document 1].Audit olunan bankın inzibatçısı olduqda özünü yoxlama təhlükəsi yaranır [4.3.2].Do not provide chain-of-thought, reasoning, analysis, or internal explanations. Output only the final answer in Azerbaijani.Do not mention retrieval, context documents, or the generation process.If the answer cannot be found in the provided context, clearly state that the information is not available.
+
+Context:
+
+--- Document 1 ---
+Document: 802-IIQ-Azərbaycan Respublikasının Mərkəzi Bankı haqqında
+Category: laws
+Chapter: I
+Article: 5
+Page: 2
+
+Content:
+Maddə 5 . Mərkəzi Bankın funksiyaları
+5.1. Mərkəzi Bankın funksiyaları aşağıdakılardır:
+5.1.1. dövlətin pul və məzənnə siyasətinin müəyyən edilməsi və həyata keçirilməsi;
+5.1.2. nağd pul dövriyyəsinin təşkil edilməsi, Azərbaycan Respublikası Konstitusiyasının
+19-cu maddəsinin II hissəsinə və bu Qanuna müvafiq olaraq pul nişanlarının tədavülə
+buraxılmasının və tədavüldən çıxarılmasının həyata keçirilməsi;
+5.1.3. manatın xarici valyutalara nisbətdə rəsmi məzənnəsinin mütəmadi müəyyən
+edilməsi və elan edilməsi;
+5.1.4. sərəncamında olan beynəlxalq qızıl-valyuta ehtiyatlarının saxlanması və idarə
+edilməsi;
+5.1.5. beynəlxalq standart və metodologiyalara uyğun olaraq monetar, maliyyə bazarları və
+ödəniş sistemləri üzrə statistikanın, ölkənin tədiyə balansının, beynəlxalq investisiya balansının
+və icmal (dövlət və qeyri-dövlət) xarici borc statistikasının tərtib edilməsi, məlumatların
+ümumiləşdirilməsi və yayılmasının təmin edilməsi, habelə ölkənin tədiyə balansının
+proqnozlaşdırılmasında iştirak edilməsi;
+5.1.6. maliyyə bazarlarının fəaliyyətinin sabitliyi və dayanıqlığının təmin edilməsi,
+maliyyə bazarlarında tənzimləmə və nəzarətin, o cümlədən makroprudensial tənzimləmə və
+nəzarətin həyata keçirilməsi;
+5.1.7. ödəniş sistemlərinin sabit, təhlükəsiz və effektiv fəaliyyətinin təmin edilməsi,
+inkişafına dəstək verilməsi;
+5.1.8. maliyyə bazarlarında istehlakçıların və investorların hüquqlarının qorunması üçün
+tədbirlərin görülməsi və maliyyə bazarları sahəsində maarifləndirmə işlərinin aparılması;
+5.1.9. “Valyuta tənzimi haqqında” Azərbaycan Respublikasının Qanununa uyğun olaraq
+valyuta tənziminin və nəzarətinin həyata keçirilməsi;
+5.1.10. əmanətlərin sığortalanması sahəsində nəzarət sisteminin fəaliyyətinin təmin
+edilməsi;
+5.1.11. bu Qanunda və digər qanunlarda nəzərdə tutulmuş başqa funksiyaların həyata
+keçirilməsi.10
+
+---
+
+--- Document 2 ---
+Document: 802-IIQ-Azərbaycan Respublikasının Mərkəzi Bankı haqqında
+Category: laws
+Chapter: II
+Article: 10
+Page: 4
+
+Content:
+Maddə 10 . Mərkəzi Bankın kapitalı
+10.1. Mərkəzi Bankın kapitalı onun nizamnamə fondundan və kapital
+ehtiyatlarından ibarətdir.22
+10.2. Mərkəzi Bankın nizamnamə fondu 500 milyon manatdır.23
+10.3. Mərkəzi Bankın kapital ehtiyatları onun nizamnamə fondundan az olmamaq şərti
+ilə hesabat ilinin mənfəətindən ayırmalar hesabına formalaşdırılır.24
+
+---
+
+--- Document 3 ---
+Document: 590-IIQ-Banklar haqqında
+Category: laws
+Chapter: VIII
+Article: 57
+Page: 49
+
+Content:
+dəfə Mərkəzi Banka hesabat verir.
+57-2.4. Bankın maliyyə vəziyyətinin yaxşılaşdırılması, itirilmiş kapitalının bərpası və likvidliyinin
+təmin edilməsi məqsədi ilə müvəqqəti inzibatçı, həmçinin aşağıdakı səlahiyyətləri həyata keçirir:
+57-2.4.1. bankın rezolyusiyası ilə bağlı tədbirlər planının hazırlanması çərçivəsində bankın
+aktivlərinin və öhdəliklərinin həcmini müəyyən edir, yenilənmiş balans hesabatını hazırlayır, məcmu
+kapitalını yenidən qiymətləndirir və bankın kapital kəsirini müəyyən edir;
+57-2.4.2. bankın kapitalının artırılması üçün:
+57-2.4.2.1. nizamnamə kapitalındakı payının artırılması müqabilində bankın mühüm iştirak
+payına malik səhmdarlarına məxsus olan, bankın çatışmayan kapitalı həcmində bankda saxlanılan
+əmanətlərini nizamnamə kapitalına daxil edir;
+57-2.4.2.2. nizamnamə kapitalındakı payının artırılması müqabilində bankın mühüm iştirak
+payına malik səhmdarlarının banka bilavasitə və ya dolayı olaraq verdiyi subordinasiya borc öhdəliklərini
+ikinci dərəcəli kapitaldan nizamnamə kapitalına daxil edir;
+57-2.4.3. bankın yaratdığı törəmə hüquqi şəxslərdəki payını (onun bir hissəsini), mülkiyyətində
+olan daşınmaz əmlakı və digər aktivləri satır və ya girov qoyur.
+
+---
+
+--- Document 4 ---
+Document: 802-IIQ-Azərbaycan Respublikasının Mərkəzi Bankı haqqında
+Category: laws
+Chapter: I
+Article: 7
+Page: 3
+
+Content:
+Maddə 7 . Mərkəzi Bankın hesabatlığı
+7.1. Mərkəzi Bank öz fəaliyyəti barədə yalnız Azərbaycan Respublikası
+Prezidentinə hesabat verir.
+7.2. Mərkəzi Bankın Azərbaycan Respublikası Prezidenti qarşısında hesabatlığı
+aşağıdakılardan ibarətdir:
+7.2.1. Azərbaycan Respublikası Konstitusiyasının 109-cu maddəsinin 10-cu
+bəndinə müvafiq olaraq Mərkəzi Bankın İdarə Heyəti üzvlərinin vəzifəyə təyin və
+vəzifədən azad edilməsindən;13
+7.2.2. Azərbaycan Respublikası Konstitusiyasının 109-cu maddəsinin 10-cu və 32-
+ci bəndlərinə müvafiq olaraq Mərkəzi Bankın sədrinin və onun müavinlərinin vəzifəyə
+təyin və vəzifədən azad edilməsindən;14
+7.2.3. bu Qanunun 58-ci maddəsinə müvafiq olaraq Mərkəzi Bankın fəaliyyətinin
+yoxlanılması üçün auditorun təyin edilməsindən və zəruri hallarda auditor
+yoxlamasının növbədənkənar qaydada keçirilməsindən;
+7.2.4. Mərkəzi Bankın İdarə Heyətinin sədri tərəfindən ildə iki dəfə Mərkəzi
+Bankın əsas məqsəd və funksiyalarının həyata keçirilməsi barədə hesabatın, habelə
+audit rəyi ilə təsdiq edilmiş “Mühasibat uçotu haqqında” Azərbaycan Respublikası
+Qanununun 12-1-ci maddəsinə uyğun olaraq illik maliyyə hesabatının və hesabat
+əməliyyat büdcəsi barədə hesabatın Azərbaycan Respublikası Prezidentinə təqdim
+edilməsi. 15
+7.3. Büdcə layihəsinin müzakirəsi zamanı Mərkəzi Bankın İdarə Heyətinin sədri
+qarşıdakı il üçün pul siyasətinin əsas istiqamətləri barədə Azərbaycan Respublikası
+Milli Məclisinə məlumat verir.
+
+---
+
+--- Document 5 ---
+Document: 802-IIQ-Azərbaycan Respublikasının Mərkəzi Bankı haqqında
+Category: laws
+Chapter: I
+Article: 1
+Page: 1
+
+Content:
+Maddə 1 . Azərbaycan Respublikasının Mərkəzi Bankı
+1.1. Azərbaycan Respublikasının Mərkəzi Bankı (bundan sonra Mərkəzi Bank)
+Azərbaycan Respublikasının mərkəzi bankıdır.
+1.2. Azərbaycan Respublikası Konstitusiyasının 19-cu maddəsinin II hissəsinə
+müvafiq olaraq Mərkəzi Bank dövlətin müstəsna mülkiyyətindədir.
+1.3. Mərkəzi Bankın məqsədi, funksiya və səlahiyyətləri Azərbaycan
+Respublikasının Konstitusiyası ilə və bu Qanunla müəyyənləşdirilir. Mərkəzi Bank öz
+fəaliyyətində həmçinin Azərbaycan Respublikasının digər qanunvericilik aktlarını və
+Azərbaycan Respublikasının tərəfdar çıxdığı beynəlxalq müqavilələri rəhbər tutur.
+1.4. Mərkəzi Bankı mərkəzi aparatı Bakı şəhərində yerləşir.
+
+---
+
+Question: Mərkəzi Bankın funksiyaları və kapitalı barədə məlumat verin.
+
+Answer:

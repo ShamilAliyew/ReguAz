@@ -1,0 +1,121 @@
+# =============================================================================
+# ReguAZ Backend — .dockerignore
+# Build context: repo root  (docker build -f backend/Dockerfile .)
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Secrets & environment files
+# Never bake credentials or local config into the image.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+
+# ---------------------------------------------------------------------------
+# Version control
+# ---------------------------------------------------------------------------
+.git
+.gitignore
+.gitattributes
+
+# ---------------------------------------------------------------------------
+# Python cache & compiled artefacts
+# These are regenerated at runtime and bloat the image unnecessarily.
+# ---------------------------------------------------------------------------
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*$py.class
+*.so
+
+# ---------------------------------------------------------------------------
+# Python packaging artefacts
+# ---------------------------------------------------------------------------
+*.egg
+*.egg-info/
+dist/
+build/
+develop-eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+.installed.cfg
+
+# ---------------------------------------------------------------------------
+# Virtual environments
+# Poetry creates one locally; we disable venv creation in Docker.
+# ---------------------------------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+.env/
+
+# ---------------------------------------------------------------------------
+# Local LLM model weights  ← CRITICAL
+# GGUF files are large (2–10 GB) and must NOT enter the image.
+# LLM inference runs outside the container via Cloudflare Tunnel.
+# ---------------------------------------------------------------------------
+**/*.gguf
+**/*.bin
+**/*.onnx
+**/*.safetensors
+backend/reguaz/models/
+
+# ---------------------------------------------------------------------------
+# Local Qdrant database folder inside backend/
+# The collection is copied from data/qdrant/ (repo root) in the Dockerfile.
+# The local backend/qdrant_data/ lock file must not conflict.
+# ---------------------------------------------------------------------------
+backend/qdrant_data/
+
+# ---------------------------------------------------------------------------
+# Development & evaluation artefacts
+# ---------------------------------------------------------------------------
+backend/logs/
+backend/results/
+backend/debug/
+backend/tests/
+logs/
+results/
+debug/
+
+# ---------------------------------------------------------------------------
+# Data — raw source documents (not needed at runtime)
+# processed/ chunks and metadata ARE needed and are explicitly COPYed.
+# ---------------------------------------------------------------------------
+data/raw/
+data/chroma/
+data/evaluation/
+
+# ---------------------------------------------------------------------------
+# Jupyter notebooks & checkpoints
+# ---------------------------------------------------------------------------
+*.ipynb
+.ipynb_checkpoints/
+
+# ---------------------------------------------------------------------------
+# macOS & IDE noise
+# ---------------------------------------------------------------------------
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---------------------------------------------------------------------------
+# Documentation (not needed in the container)
+# ---------------------------------------------------------------------------
+docs/
+README.md
+frontend/

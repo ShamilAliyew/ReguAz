@@ -1,0 +1,12 @@
+{
+  "document_id": "c8ef8b99-7b1c-442c-bf14-1f015ec0cc8e",
+  "title": "c8ef8b99-7b1c-442c-bf14-1f015ec0cc8e",
+  "category": "payments_and_banking_operations",
+  "source_file": "c8ef8b99-7b1c-442c-bf14-1f015ec0cc8e.pdf",
+  "processed_file": "c8ef8b99-7b1c-442c-bf14-1f015ec0cc8e.md",
+  "total_pages": 3,
+  "total_chunks": 6,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.051364"
+}

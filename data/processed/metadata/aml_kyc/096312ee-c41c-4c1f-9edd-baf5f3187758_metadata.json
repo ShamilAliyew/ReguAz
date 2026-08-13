@@ -1,0 +1,12 @@
+{
+  "document_id": "096312ee-c41c-4c1f-9edd-baf5f3187758",
+  "title": "096312ee-c41c-4c1f-9edd-baf5f3187758",
+  "category": "aml_kyc",
+  "source_file": "096312ee-c41c-4c1f-9edd-baf5f3187758.pdf",
+  "processed_file": "096312ee-c41c-4c1f-9edd-baf5f3187758.md",
+  "total_pages": 10,
+  "total_chunks": 58,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.172874"
+}

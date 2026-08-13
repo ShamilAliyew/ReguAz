@@ -1,0 +1,25 @@
+{
+  "document_id": "doc_c7adb68f3d07bb766fb0b667",
+  "status": "success",
+  "profile": "DECISION_OR_AMENDMENT",
+  "profiles_detected": [
+    "DECISION_OR_AMENDMENT"
+  ],
+  "parent_count": 0,
+  "child_count": 0,
+  "atomic_unit_count": 0,
+  "table_count": 0,
+  "unclassified_node_count": 0,
+  "unresolved_reference_count": 0,
+  "duplicate_chunk_count": 0,
+  "min_tokens": 0,
+  "median_tokens": 0,
+  "p95_tokens": 0,
+  "max_tokens": 0,
+  "quality_flags": [
+    "low_text_quality"
+  ],
+  "errors": [
+    "input Markdown is empty; no legal content was invented"
+  ]
+}

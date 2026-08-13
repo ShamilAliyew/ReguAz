@@ -1,0 +1,12 @@
+{
+  "document_id": "Banklar Haqqında Qanun",
+  "title": "Banklar Haqqında Qanun",
+  "category": "laws",
+  "source_file": "Banklar Haqqında Qanun.pdf",
+  "processed_file": "Banklar Haqqında Qanun.md",
+  "total_pages": 136,
+  "total_chunks": 198,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.072272"
+}

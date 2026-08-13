@@ -1,0 +1,12 @@
+{
+  "document_id": "Bank Şöbələri və Valyuta Qaydası",
+  "title": "Bank Şöbələri və Valyuta Qaydası",
+  "category": "payments_and_banking_operations",
+  "source_file": "Bank Şöbələri və Valyuta Qaydası.pdf",
+  "processed_file": "Bank Şöbələri və Valyuta Qaydası.md",
+  "total_pages": 5,
+  "total_chunks": 8,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.052878"
+}

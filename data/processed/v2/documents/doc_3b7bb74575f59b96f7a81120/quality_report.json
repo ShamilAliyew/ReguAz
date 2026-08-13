@@ -1,0 +1,23 @@
+{
+  "document_id": "doc_3b7bb74575f59b96f7a81120",
+  "status": "success",
+  "profile": "REGULATION",
+  "profiles_detected": [
+    "REGULATION"
+  ],
+  "parent_count": 7,
+  "child_count": 22,
+  "atomic_unit_count": 25,
+  "table_count": 0,
+  "unclassified_node_count": 1,
+  "unresolved_reference_count": 0,
+  "duplicate_chunk_count": 0,
+  "min_tokens": 47,
+  "median_tokens": 71,
+  "p95_tokens": 132,
+  "max_tokens": 158,
+  "quality_flags": [
+    "unclassified_structure"
+  ],
+  "errors": []
+}

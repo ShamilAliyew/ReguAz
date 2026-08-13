@@ -1,0 +1,12 @@
+{
+  "document_id": "3df76b8c-0902-46c3-86d9-7274e5a85bfa",
+  "title": "3df76b8c-0902-46c3-86d9-7274e5a85bfa",
+  "category": "reporting_and_audit",
+  "source_file": "3df76b8c-0902-46c3-86d9-7274e5a85bfa.pdf",
+  "processed_file": "3df76b8c-0902-46c3-86d9-7274e5a85bfa.md",
+  "total_pages": 6,
+  "total_chunks": 20,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.027478"
+}

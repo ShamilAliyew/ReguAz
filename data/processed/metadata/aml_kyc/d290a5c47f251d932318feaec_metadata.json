@@ -1,0 +1,12 @@
+{
+  "document_id": "d290a5c47f251d932318feaec",
+  "title": "d290a5c47f251d932318feaec",
+  "category": "aml_kyc",
+  "source_file": "d290a5c47f251d932318feaec.pdf",
+  "processed_file": "d290a5c47f251d932318feaec.md",
+  "total_pages": 13,
+  "total_chunks": 8,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.162278"
+}

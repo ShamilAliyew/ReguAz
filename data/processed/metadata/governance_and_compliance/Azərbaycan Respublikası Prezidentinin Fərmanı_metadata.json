@@ -1,0 +1,12 @@
+{
+  "document_id": "Azərbaycan Respublikası Prezidentinin Fərmanı",
+  "title": "Azərbaycan Respublikası Prezidentinin Fərmanı",
+  "category": "governance_and_compliance",
+  "source_file": "Azərbaycan Respublikası Prezidentinin Fərmanı.pdf",
+  "processed_file": "Azərbaycan Respublikası Prezidentinin Fərmanı.md",
+  "total_pages": 12,
+  "total_chunks": 27,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.143499"
+}

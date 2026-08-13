@@ -1,0 +1,27 @@
+{
+  "document_id": "doc_9ee985bdea9cd3a6418af976",
+  "status": "success",
+  "profile": "LEGAL_ACT",
+  "profiles_detected": [
+    "LEGAL_ACT",
+    "REGULATION",
+    "TABLE_OR_FORM"
+  ],
+  "parent_count": 116,
+  "child_count": 668,
+  "atomic_unit_count": 673,
+  "table_count": 0,
+  "unclassified_node_count": 1,
+  "unresolved_reference_count": 370,
+  "duplicate_chunk_count": 0,
+  "min_tokens": 26,
+  "median_tokens": 95,
+  "p95_tokens": 149,
+  "max_tokens": 272,
+  "quality_flags": [
+    "cross_page_split",
+    "unclassified_structure",
+    "unresolved_reference"
+  ],
+  "errors": []
+}

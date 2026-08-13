@@ -1,0 +1,12 @@
+{
+  "document_id": "ad29955c-5a37-413c-937e-cd1e5988ae62",
+  "title": "ad29955c-5a37-413c-937e-cd1e5988ae62",
+  "category": "aml_kyc",
+  "source_file": "ad29955c-5a37-413c-937e-cd1e5988ae62.pdf",
+  "processed_file": "ad29955c-5a37-413c-937e-cd1e5988ae62.md",
+  "total_pages": 8,
+  "total_chunks": 16,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.171306"
+}

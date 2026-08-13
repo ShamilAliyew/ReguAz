@@ -1,0 +1,12 @@
+{
+  "document_id": "faa09ce5-3d98-48b1-ac48-e81ca3d9d4e7",
+  "title": "faa09ce5-3d98-48b1-ac48-e81ca3d9d4e7",
+  "category": "risk_management",
+  "source_file": "faa09ce5-3d98-48b1-ac48-e81ca3d9d4e7.pdf",
+  "processed_file": "faa09ce5-3d98-48b1-ac48-e81ca3d9d4e7.md",
+  "total_pages": 6,
+  "total_chunks": 20,
+  "language": "az",
+  "parser": "pdfplumber",
+  "created_at": "2026-06-27T02:46:34.092238"
+}

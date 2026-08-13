@@ -1,0 +1,35 @@
+{
+  "schema_version": "2.0",
+  "status": "success",
+  "corpus_version": "v2-0800591c80fd07bd",
+  "embedding_model_id": "BAAI/bge-m3",
+  "embedding_model_revision": "5617a9f61b028005a4858fdac845db406aefb181",
+  "dense_dimension": 1024,
+  "vector_modes": [
+    "dense",
+    "sparse"
+  ],
+  "source_embedding_manifest": "/Users/samil/Desktop/AI:ML/banking-regulatory-intelligence-platform/data/processed/v2/embeddings/bge_m3/v2-0800591c80fd07bd/manifest.json",
+  "source_embedding_manifest_sha256": "d9b9c228bf9f771e2868b5d0031189bef88979049355f968414c2c7d0c04bf0b",
+  "qdrant_path": "/Users/samil/Desktop/AI:ML/banking-regulatory-intelligence-platform/data/processed/v2/qdrant",
+  "qdrant_mode": "local_embedded",
+  "physical_collection": "reguaz_v2_bge_m3_v2_0800591c80fd07bd_5617a9f61b",
+  "alias": "reguaz_v2_current",
+  "point_count": 17729,
+  "expected_point_count": 17729,
+  "payload_indexes": [
+    "category",
+    "document_id",
+    "document_version_id",
+    "logical_chunk_id",
+    "chunk_type",
+    "node_type",
+    "status",
+    "is_current",
+    "hierarchy.article.number"
+  ],
+  "payload_indexes_effective": false,
+  "dense_smoke_result_count": 3,
+  "sparse_smoke_result_count": 3,
+  "completed_at": "2026-08-04T09:09:39.306504Z"
+}
