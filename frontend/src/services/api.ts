@@ -6,6 +6,7 @@ import {
   DocumentHighlightResponse 
 } from "../types/api";
 import type { LLMModelId, LLMModelOption } from "../types/api";
+import type { SpeechAudioResult, SpeechStatus } from "../types/api";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
@@ -140,6 +141,51 @@ export const apiService = {
       );
       return FALLBACK_LLM_MODELS;
     }
+  },
+
+  getSpeechStatus: async (): Promise<SpeechStatus> => {
+    if (useMockApi()) return mockService.getSpeechStatus();
+    try {
+      const res = await fetch(`${API_URL}/speech/status`);
+      return handleResponse<SpeechStatus>(res);
+    } catch {
+      return {
+        available: false,
+        provider: "openrouter",
+        model_id: "fish-audio/s2.1-pro-free:free",
+        output_format: "mp3",
+        reason: "backend_unavailable",
+      };
+    }
+  },
+
+  createSpeech: async (
+    text: string,
+    signal?: AbortSignal,
+  ): Promise<SpeechAudioResult> => {
+    if (useMockApi()) throw new Error("Səsləndirmə mock rejimində deaktivdir.");
+    const res = await fetch(`${API_URL}/speech`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+      signal,
+    });
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      const message = errorData.error?.message || "Səs yaradılmadı.";
+      throw new Error(message);
+    }
+    const contentType = res.headers.get("content-type")?.split(";", 1)[0];
+    if (contentType !== "audio/mpeg") throw new Error("Server etibarlı MP3 qaytarmadı.");
+    const audio = await res.blob();
+    if (!audio.size) throw new Error("Server boş audio qaytardı.");
+    const latency = Number(res.headers.get("x-tts-latency-ms"));
+    return {
+      audio,
+      generationId: res.headers.get("x-generation-id"),
+      modelId: res.headers.get("x-tts-model"),
+      latencyMs: Number.isFinite(latency) ? latency : null,
+    };
   },
 
   // 3. GET /documents

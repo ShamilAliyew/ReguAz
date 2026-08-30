@@ -14,6 +14,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import List, Literal
 
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -58,6 +59,13 @@ class Settings(BaseSettings):
     CORS_ALLOW_CREDENTIALS: bool = False
     CORS_ALLOW_METHODS: List[str] = ["GET", "POST", "OPTIONS"]
     CORS_ALLOW_HEADERS: List[str] = ["*"]
+    CORS_EXPOSE_HEADERS: List[str] = [
+        "X-Generation-Id",
+        "X-TTS-Model",
+        "X-TTS-Latency-Ms",
+        "X-TTS-Characters",
+        "Server-Timing",
+    ]
 
     QDRANT_DIR: str = "qdrant_data"
     CHUNKS_DIR: str = "data/processed/chunks"
@@ -88,6 +96,24 @@ class Settings(BaseSettings):
     V2_REFERENCE_CONFIDENCE_MIN: float = 0.8
     V2_PARENT_EXCERPT_CHAR_LIMIT: int = 700
     V2_CONTEXT_SAFETY_MARGIN_TOKENS: int = 256
+
+    # ── Optional answer speech ────────────────────────────────────────────────
+    OPENROUTER_TTS_ENABLED: bool = True
+    OPENROUTER_API_KEY: SecretStr | None = None
+    OPENROUTER_API_BASE: str = "https://openrouter.ai/api/v1"
+    OPENROUTER_TTS_MODEL: Literal["fish-audio/s2.1-pro-free:free"] = (
+        "fish-audio/s2.1-pro-free:free"
+    )
+    # Public Fish Audio Azerbaijani narrator voice. Keeping a reference ID
+    # avoids provider-selected voice changes between requests.
+    OPENROUTER_TTS_VOICE: str | None = "1db26754d7d84db39b8463c322c8d162"
+    OPENROUTER_SITE_URL: str | None = None
+    OPENROUTER_APP_TITLE: str = "ReguAZ"
+    OPENROUTER_TTS_TIMEOUT_SECONDS: float = 60.0
+    OPENROUTER_TTS_MAX_INPUT_CHARACTERS: int = 5_000
+    OPENROUTER_TTS_MAX_AUDIO_BYTES: int = 15 * 1024 * 1024
+    OPENROUTER_TTS_MAX_CONCURRENCY: int = 2
+    OPENROUTER_TTS_MAX_RETRIES: int = 1
 
     # ── Logging ───────────────────────────────────────────────────────────────
     LOG_LEVEL: str = "INFO"

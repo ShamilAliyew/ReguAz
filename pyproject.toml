@@ -25,6 +25,7 @@ dependencies = [
     "ragas>=0.4.3,<0.5.0",
     "langchain-nvidia-ai-endpoints>=1.4.3,<2.0.0",
     "openai>=2.45.0,<3.0.0",
+    "httpx>=0.28.1,<1.0.0",
 
     # ==========================
     # Backend API
@@ -47,7 +48,6 @@ dependencies = [
 dev = [
     "pytest>=8.4.1,<9.0.0",
     "pytest-asyncio>=1.1.0,<2.0.0",
-    "httpx>=0.28.1,<1.0.0",
     "ruff>=0.12.4,<1.0.0",
     "black>=25.1.0,<26.0.0",
     "isort>=6.0.1,<7.0.0",

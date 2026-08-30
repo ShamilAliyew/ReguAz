@@ -123,6 +123,21 @@ export interface ChatResponse {
   model?: Record<string, unknown> | null;
 }
 
+export interface SpeechStatus {
+  available: boolean;
+  provider: string;
+  model_id: string;
+  output_format: "mp3";
+  reason?: string | null;
+}
+
+export interface SpeechAudioResult {
+  audio: Blob;
+  generationId: string | null;
+  modelId: string | null;
+  latencyMs: number | null;
+}
+
 export interface DocumentMetadataResponse {
   document_id: string;
   title: string;

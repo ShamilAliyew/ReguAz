@@ -152,6 +152,14 @@ export const mockService = {
     },
   ],
 
+  getSpeechStatus: async () => ({
+    available: false,
+    provider: "openrouter",
+    model_id: "fish-audio/s2.1-pro-free:free",
+    output_format: "mp3" as const,
+    reason: "mock_mode",
+  }),
+
   // GET /documents
   getDocuments: async (): Promise<DocumentMetadataResponse[]> => {
     await new Promise(r => setTimeout(r, 300));

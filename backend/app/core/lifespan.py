@@ -25,6 +25,7 @@ class AppState:
     document_index: list[dict[str, Any]] = field(default_factory=list)
     document_service: Any | None = None
     artifact_store: Any | None = None
+    speech_service: Any | None = None
     pipeline_version: str = "v1"
     is_ready: bool = False
     startup_time_s: float | None = None
@@ -47,6 +48,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             _load_v1(state, settings)
         else:
             raise ValueError(f"unsupported pipeline version: {state.pipeline_version}")
+        _load_speech(state, settings)
         state.is_ready = True
         state.startup_time_s = time.perf_counter() - started
         app.state.reguaz = state
@@ -57,6 +59,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         )
         yield
     finally:
+        if state.speech_service is not None:
+            try:
+                await state.speech_service.aclose()
+            except Exception:
+                logger.warning("speech service shutdown failed", exc_info=True)
         pipeline_closes_llms = False
         if state.generation_pipeline is not None and hasattr(
             state.generation_pipeline, "close"
@@ -83,6 +90,34 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             except Exception:
                 logger.warning("LLM shutdown failed", exc_info=True)
         state.is_ready = False
+
+
+def _load_speech(state: AppState, settings: Settings) -> None:
+    """Load optional TTS without making core RAG startup depend on its key."""
+
+    api_key = (
+        settings.OPENROUTER_API_KEY.get_secret_value().strip()
+        if settings.OPENROUTER_API_KEY is not None
+        else ""
+    )
+    if not settings.OPENROUTER_TTS_ENABLED or not api_key:
+        logger.info("answer speech is disabled or OPENROUTER_API_KEY is not configured")
+        return
+    from backend.reguaz.services.speech.openrouter_tts import OpenRouterTTSService
+
+    state.speech_service = OpenRouterTTSService(
+        api_key=api_key,
+        base_url=settings.OPENROUTER_API_BASE,
+        model_id=settings.OPENROUTER_TTS_MODEL,
+        voice=settings.OPENROUTER_TTS_VOICE,
+        site_url=settings.OPENROUTER_SITE_URL,
+        app_title=settings.OPENROUTER_APP_TITLE,
+        timeout_seconds=settings.OPENROUTER_TTS_TIMEOUT_SECONDS,
+        max_input_characters=settings.OPENROUTER_TTS_MAX_INPUT_CHARACTERS,
+        max_audio_bytes=settings.OPENROUTER_TTS_MAX_AUDIO_BYTES,
+        max_concurrency=settings.OPENROUTER_TTS_MAX_CONCURRENCY,
+        max_retries=settings.OPENROUTER_TTS_MAX_RETRIES,
+    )
 
 
 def _load_v2(state: AppState, settings: Settings) -> None:

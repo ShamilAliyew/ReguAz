@@ -19,6 +19,7 @@ import { Citation, SourceDocument } from "@/types/api";
 import type { LLMModelId } from "@/types/api";
 import { apiService } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
+import { SpeechButton } from "./SpeechButton";
 
 type DisplaySource = SourceDocument | Citation;
 
@@ -113,6 +114,11 @@ export const ChatContainer: React.FC = () => {
     queryKey: ["llm-models"],
     queryFn: apiService.getLlmModels,
     staleTime: 30_000,
+  });
+  const { data: speechStatus } = useQuery({
+    queryKey: ["speech-status"],
+    queryFn: apiService.getSpeechStatus,
+    staleTime: 60_000,
   });
 
   const suggestionPrompts = [
@@ -275,6 +281,13 @@ export const ChatContainer: React.FC = () => {
                             </span>
                           )}
                           <MarkdownRenderer content={message.content} sources={message.citations?.length ? message.citations : message.sources} />
+                          {!message.isStreaming && (
+                            <SpeechButton
+                              text={message.content}
+                              available={speechStatus?.available ?? false}
+                              unavailableReason={speechStatus?.reason}
+                            />
+                          )}
                           {!message.isStreaming && <MessageSources sources={message.citations?.length ? message.citations : message.sources} />}
                         </>
                       )}

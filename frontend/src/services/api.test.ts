@@ -81,4 +81,49 @@ describe("apiService model selection", () => {
     expect(models).toEqual(FALLBACK_LLM_MODELS);
     expect(models.map((model) => model.id)).toContain("groq_gpt_oss_120b");
   });
+
+  it("requests MP3 speech without exposing provider credentials", async () => {
+    vi.stubGlobal("localStorage", storage);
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(new Blob([new Uint8Array([73, 68, 51, 0])]), {
+        status: 200,
+        headers: {
+          "Content-Type": "audio/mpeg",
+          "X-Generation-Id": "gen-1",
+          "X-TTS-Model": "fish-audio/s2.1-pro-free:free",
+          "X-TTS-Latency-Ms": "125.5",
+        },
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await apiService.createSpeech("Cavab [1]");
+
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body as string)).toEqual({
+      text: "Cavab [1]",
+    });
+    expect(fetchMock.mock.calls[0][1].headers).toEqual({
+      "Content-Type": "application/json",
+    });
+    expect(result.audio.size).toBeGreaterThan(0);
+    expect(result.generationId).toBe("gen-1");
+    expect(result.latencyMs).toBe(125.5);
+  });
+
+  it("rejects a non-audio speech response", async () => {
+    vi.stubGlobal("localStorage", storage);
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response("not audio", {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      ),
+    );
+
+    await expect(apiService.createSpeech("Cavab")).rejects.toThrow(
+      "Server etibarlı MP3 qaytarmadı.",
+    );
+  });
 });

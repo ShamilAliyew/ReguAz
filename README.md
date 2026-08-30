@@ -237,10 +237,13 @@ This installs everything declared in `pyproject.toml` / `poetry.lock`, including
 
 ### Configure environment
 ```bash
-export HF_TOKEN=your_huggingface_token
-# or
-huggingface-cli login
+cp .env.example .env
+# Edit .env and add only the provider keys you intend to use.
+# Never commit .env.
 ```
+
+`OPENROUTER_API_KEY` is required only for the optional answer-audio button. Keep
+it in the root `.env`; it is never sent to the browser.
 
 ### Download the model
 Local inference models are downloaded automatically on first use via Hugging Face Transformers. To pre-fetch:
@@ -248,13 +251,28 @@ Local inference models are downloaded automatically on first use via Hugging Fac
 python scripts/verify_llm_module.py
 ```
 
-### Run the backend
+### Run the complete development application
 ```bash
-python scripts/run_llm_demo.py
+./scripts/start_dev.sh
 ```
 
-### Run the frontend
-Frontend setup instructions will be added once the React application is wired to the backend API.
+This starts the FastAPI backend at `http://127.0.0.1:8000` and the Vite frontend
+at `http://127.0.0.1:3000`. Press `Ctrl+C` once to stop both processes. The
+scripts resolve the repository root from their own location, so they do not
+contain machine-specific paths.
+
+To run the services in separate terminals:
+
+```bash
+./scripts/start_backend.sh
+./scripts/start_frontend.sh
+```
+
+Optional port overrides are supported without editing source files:
+
+```bash
+BACKEND_PORT=8010 FRONTEND_PORT=3010 ./scripts/start_dev.sh
+```
 
 ### Verify the installation
 ```bash
@@ -267,13 +285,18 @@ python scripts/verify_llm_module.py   # Smoke-tests the LLM module imports and a
 
 ## 7. Configuration
 
-The codebase currently reads no required environment variables — `config.py` defines paths and constants directly. A `.env` file is gitignored for future use. Relevant variables when set:
+Application settings are loaded from environment variables and the ignored
+repository-root `.env`. Relevant optional secrets include:
 
 | Variable | Purpose |
 |---|---|
 | `HF_TOKEN` | Authenticates Hugging Face downloads for gated or private models. |
+| `GROQ_API_KEY` | Enables the configured Groq generation providers. |
+| `NVIDIA_API_KEY` | Enables the NVIDIA generation provider. |
+| `OPENROUTER_API_KEY` | Enables on-demand Fish Audio answer speech. |
 
-Key constants in `backend/reguaz/config.py` control default batch sizes, top-k retrieval depth, the RRF fusion constant, and the set of supported embedding models — adjust these directly for local experimentation.
+Non-secret defaults are documented in `.env.example`. TTS-specific operational
+and privacy details are in [docs/tts.md](docs/tts.md).
 
 ---
 
@@ -431,3 +454,5 @@ The read-only V2 retrieval stage combines lean named dense and learned-sparse Qd
 The V2 generation path adds depth-one relation expansion, evidence budgeting, structured local Gemma output, backend-resolved citations, and exact cleaned-Markdown highlighting. See [docs/generation_v2.md](docs/generation_v2.md).
 
 V2 chat can select local Gemma, Groq GPT-OSS 20B, or Groq GPT-OSS 120B per request. Remote models use strict JSON Schema output; citation metadata remains backend-resolved from immutable V2 artifacts. Provider setup and the consent-gated dev benchmark are documented in [docs/generation_v2.md](docs/generation_v2.md).
+
+Final assistant answers also support optional, on-demand OpenRouter/Fish Audio text-to-speech. The small speaker control does not delay retrieval or generation, and audio is not persisted. Configuration, security rules and the fixed Azerbaijani smoke suite are documented in [docs/tts.md](docs/tts.md).
