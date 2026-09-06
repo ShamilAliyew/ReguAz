@@ -9,11 +9,7 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        build-essential \
-        cmake \
-        git \
         libgomp1 \
-        ninja-build \
     && rm -rf /var/lib/apt/lists/*
 
 RUN python -m venv /opt/venv \
@@ -24,6 +20,8 @@ WORKDIR /app
 # Dependency files are copied before source code so this expensive layer is
 # reused whenever only application code changes.
 COPY backend/pyproject.toml backend/poetry.lock ./backend/
+# Render uses remote Groq/NVIDIA providers. Exclude the optional local
+# llama.cpp runtime: compiling it from source exceeds Render's build RAM.
 RUN --mount=type=cache,target=/root/.cache/pip \
     poetry export \
         --directory /app/backend \
@@ -31,7 +29,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
         --without-hashes \
         --format requirements.txt \
         --output /tmp/requirements.txt \
-    && grep -Eiv '^(torch|triton|nvidia-|cuda-)' \
+    && grep -Eiv '^(torch|triton|nvidia-|cuda-|llama-cpp-python)' \
         /tmp/requirements.txt > /tmp/requirements-cpu.txt \
     && pip install \
         --index-url https://download.pytorch.org/whl/cpu \

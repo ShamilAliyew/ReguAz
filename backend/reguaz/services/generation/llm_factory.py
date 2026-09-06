@@ -6,7 +6,6 @@ from typing import Any
 
 from backend.reguaz import config
 from backend.reguaz.services.generation.base_llm import BaseLLM
-from backend.reguaz.services.generation.gemma_service import GemmaService
 from backend.reguaz.services.generation.groq_service import GroqGptOssService
 from backend.reguaz.services.generation.nvidia_gpt_service import NvidiaGptOssService
 from backend.reguaz.utils.logger import get_logger
@@ -22,8 +21,10 @@ class LLMFactory:
     of new models without modifying the core creation logic.
     """
 
-    _REGISTRY: dict[str, type[BaseLLM]] = {
-        "gemma": GemmaService,
+    _REGISTRY: dict[str, type[BaseLLM] | None] = {
+        # Gemma is imported only when selected. Production images using remote
+        # providers intentionally omit the heavyweight llama-cpp runtime.
+        "gemma": None,
         "nvidia_gpt_oss": NvidiaGptOssService,
         "groq_gpt_oss_20b": GroqGptOssService,
         "groq_gpt_oss_120b": GroqGptOssService,
@@ -90,6 +91,12 @@ class LLMFactory:
             )
 
         service_class = cls._REGISTRY[model_type]
+        if model_type == "gemma" and service_class is None:
+            from backend.reguaz.services.generation.gemma_service import GemmaService
+
+            service_class = GemmaService
+        if service_class is None:  # pragma: no cover - defensive registry guard
+            raise RuntimeError(f"LLM provider is not configured: {model_type}")
 
         params = cls._get_default_config(model_type)
         params.update(kwargs)

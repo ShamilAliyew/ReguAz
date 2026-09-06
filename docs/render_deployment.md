@@ -22,7 +22,10 @@ The backend image contains only immutable, hash-validated V2 text artifacts:
 Embedding shards, embedded Qdrant storage, and the local Gemma GGUF are not
 included. BGE-M3 and the reranker are downloaded at their pinned revisions into
 the attached `/cache` disk on first startup. Production generation defaults to
-Groq GPT-OSS 20B.
+Groq GPT-OSS 20B. The production image also omits `llama-cpp-python`; compiling
+that optional local-Gemma runtime exceeds Render's build-memory allowance.
+Gemma remains available in local installations and is imported only when it is
+actually selected.
 
 ## 1. Create and populate Qdrant Cloud
 
@@ -130,4 +133,3 @@ citation, and request TTS once. Inspect backend logs if any stage fails.
   user's browser and is not synchronized across devices.
 - Database tables are currently created idempotently at startup. Introduce
   Alembic before the first schema-changing production release.
-
