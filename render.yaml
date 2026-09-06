@@ -8,7 +8,6 @@ services:
     dockerContext: .
     dockerCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --workers 1
     autoDeployTrigger: commit
-    maxShutdownDelaySeconds: 60
     disk:
       name: reguaz-model-cache
       mountPath: /cache
