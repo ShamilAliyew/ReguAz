@@ -25,7 +25,11 @@ backend/qdrant_data/
 backend/reguaz/models/.env
 backend/reguaz/models/
 data/qdrant/
-data/processed/v2/embeddings/
+# Embedding shards remain local. The small immutable manifest is tracked because
+# query encoding and remote collection validation require its pinned revision.
+data/processed/v2/embeddings/**
+!data/processed/v2/embeddings/**/
+!data/processed/v2/embeddings/**/manifest.json
 data/processed/v2/qdrant/
 data/evaluation/*.xlsx
 results/

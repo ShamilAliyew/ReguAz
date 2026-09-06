@@ -1,0 +1,117 @@
+name: reguaz
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: reguaz
+      POSTGRES_USER: reguaz
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-reguaz_local_only}
+    volumes:
+      - reguaz_postgres_data:/var/lib/postgresql/data
+    ports:
+      # Native development uses this loopback-only port. It is not exposed to
+      # the LAN and can be overridden when another PostgreSQL instance exists.
+      - "127.0.0.1:${POSTGRES_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U reguaz -d reguaz"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: reguaz-backend:local
+    init: true
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      APP_ENV: docker
+      PORT: "8000"
+      REGUAZ_PIPELINE_VERSION: v2
+      AUTH_ENABLED: "true"
+      DATABASE_URL: postgresql+psycopg://reguaz:${POSTGRES_PASSWORD:-reguaz_local_only}@postgres:5432/reguaz
+      AUTH_COOKIE_SECURE: "false"
+      V2_ROOT: /app/data/processed/v2
+      V2_QDRANT_DIR: /app/data/processed/v2/qdrant
+      V2_LOCAL_FILES_ONLY: "true"
+      # Legacy settings create this path during import even though the Docker
+      # runtime is V2-only. Keep it ephemeral so no V1 storage is mounted or
+      # modified by the container.
+      QDRANT_PATH: /tmp/reguaz-v1-qdrant
+      LOGS_PATH: /app/logs
+      RESULTS_PATH: /app/logs/results
+      LLM_MODEL_PATH: /app/backend/reguaz/models/gemma-4-E4B-it-Q4_K_M.gguf
+      HF_HOME: /cache/huggingface
+      TOKENIZERS_PARALLELISM: "false"
+      # A bind-mount-compatible numeric UID may not exist in the image's
+      # /etc/passwd. These values keep Python/PyTorch cache discovery stable.
+      USER: reguaz
+      HOME: /tmp
+      XDG_CACHE_HOME: /tmp/.cache
+      TORCHINDUCTOR_CACHE_DIR: /tmp/torchinductor
+    volumes:
+      # Corpus is immutable; only embedded Qdrant storage needs write access.
+      - type: bind
+        source: ./data/processed/v2
+        target: /app/data/processed/v2
+        read_only: true
+      # Generation and citation validation re-check every selected chunk against
+      # the authoritative cleaned Markdown representation.
+      - type: bind
+        source: ./data/processed/cleaned_documents
+        target: /app/data/processed/cleaned_documents
+        read_only: true
+      - type: bind
+        source: ./data/processed/v2/qdrant
+        target: /app/data/processed/v2/qdrant
+      - type: bind
+        source: ./backend/reguaz/models
+        target: /app/backend/reguaz/models
+        read_only: true
+      - type: bind
+        source: ${HF_CACHE_DIR:-${HOME}/.cache/huggingface}
+        target: /cache/huggingface
+        read_only: true
+      - type: bind
+        source: ./logs
+        target: /app/logs
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8000/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 10m
+    restart: unless-stopped
+    stop_grace_period: 45s
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+        VITE_USE_MOCK_API: "false"
+    image: reguaz-frontend:local
+    init: true
+    environment:
+      API_UPSTREAM: backend:8000
+      PORT: "80"
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:80"
+    restart: unless-stopped
+
+volumes:
+  reguaz_postgres_data:

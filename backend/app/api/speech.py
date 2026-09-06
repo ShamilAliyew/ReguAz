@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 
+from backend.app.auth.dependencies import require_authenticated_user
 from backend.app.core.config import get_settings
 from backend.app.core.dependencies import get_app_state
 from backend.app.core.lifespan import AppState
@@ -16,7 +17,11 @@ from backend.reguaz.services.speech.openrouter_tts import (
 )
 
 
-router = APIRouter(prefix="/speech", tags=["speech"])
+router = APIRouter(
+    prefix="/speech",
+    tags=["speech"],
+    dependencies=[Depends(require_authenticated_user)],
+)
 
 
 @router.get(

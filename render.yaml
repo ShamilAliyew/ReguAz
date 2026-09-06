@@ -1,0 +1,97 @@
+services:
+  - type: pserv
+    name: reguaz-backend
+    runtime: docker
+    region: frankfurt
+    plan: 2c-8g
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    dockerCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --workers 1
+    autoDeployTrigger: commit
+    maxShutdownDelaySeconds: 60
+    disk:
+      name: reguaz-model-cache
+      mountPath: /cache
+      sizeGB: 10
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: PORT
+        value: "8000"
+      - key: REGUAZ_PIPELINE_VERSION
+        value: v2
+      - key: AUTH_ENABLED
+        value: "true"
+      - key: AUTH_COOKIE_SECURE
+        value: "true"
+      - key: AUTH_COOKIE_NAME
+        value: reguaz_session
+      - key: AUTH_SESSION_TTL_DAYS
+        value: "7"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: reguaz-postgres
+          property: connectionString
+      - key: V2_ROOT
+        value: /app/data/processed/v2
+      - key: V2_QDRANT_DIR
+        value: /tmp/reguaz-v2-qdrant
+      - key: V2_QDRANT_ALIAS
+        value: reguaz_v2_current
+      - key: V2_LOCAL_FILES_ONLY
+        value: "false"
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: QDRANT_TIMEOUT_SECONDS
+        value: "30"
+      - key: HF_HOME
+        value: /cache/huggingface
+      - key: TOKENIZERS_PARALLELISM
+        value: "false"
+      - key: LLM_TYPE
+        value: groq_gpt_oss_20b
+      - key: GROQ_API_KEY
+        sync: false
+      - key: OPENROUTER_TTS_ENABLED
+        value: "true"
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_TTS_MODEL
+        value: fish-audio/s2.1-pro-free:free
+      - key: OPENROUTER_TTS_VOICE
+        value: 1db26754d7d84db39b8463c322c8d162
+      - key: OPENROUTER_APP_TITLE
+        value: ReguAZ
+      - key: LOGS_PATH
+        value: /tmp/reguaz/logs
+      - key: RESULTS_PATH
+        value: /tmp/reguaz/results
+      - key: QDRANT_PATH
+        value: /tmp/reguaz-v1-qdrant
+
+  - type: web
+    name: reguaz
+    runtime: docker
+    region: frankfurt
+    plan: 0.5c-512mb
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    autoDeployTrigger: commit
+    healthCheckPath: /
+    envVars:
+      - key: API_UPSTREAM
+        fromService:
+          type: pserv
+          name: reguaz-backend
+          property: hostport
+
+databases:
+  - name: reguaz-postgres
+    region: frankfurt
+    plan: 0.1c-256mb
+    postgresMajorVersion: "16"
+    databaseName: reguaz
+    user: reguaz
+    ipAllowList: []

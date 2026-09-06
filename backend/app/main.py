@@ -32,6 +32,7 @@ if _backend_parent not in sys.path:
     sys.path.insert(0, _backend_parent)
 
 from backend.app.api.chat import router as chat_router  # noqa: E402
+from backend.app.api.auth import router as auth_router  # noqa: E402
 from backend.app.api.documents import router as documents_router  # noqa: E402
 from backend.app.api.health import router as health_router  # noqa: E402
 from backend.app.api.speech import router as speech_router  # noqa: E402
@@ -70,6 +71,7 @@ def create_app() -> FastAPI:
 
     # ── Routers ───────────────────────────────────────────────────────────────
     # Mount core API endpoints
+    app.include_router(auth_router)
     app.include_router(chat_router)
     app.include_router(documents_router)
     app.include_router(health_router)

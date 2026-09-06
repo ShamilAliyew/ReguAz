@@ -12,6 +12,7 @@ from typing import List
 # pyrefly: ignore [missing-import]
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
+from backend.app.auth.dependencies import require_authenticated_user
 from backend.app.core.dependencies import get_document_service
 from backend.app.schemas.document import (
     DocumentHighlightResponse,
@@ -20,7 +21,11 @@ from backend.app.schemas.document import (
 )
 from backend.app.services.document_service import DocumentService
 
-router = APIRouter(prefix="/documents", tags=["documents"])
+router = APIRouter(
+    prefix="/documents",
+    tags=["documents"],
+    dependencies=[Depends(require_authenticated_user)],
+)
 
 
 @router.get(

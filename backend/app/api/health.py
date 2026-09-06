@@ -65,4 +65,7 @@ def get_health(
             if state.llm is not None
             else ",".join(loaded_devices) or "lazy"
         ),
+        auth_enabled=settings.AUTH_ENABLED,
+        auth_database_ready=state.auth_database is not None,
+        qdrant_mode=str(getattr(state.retriever, "qdrant_mode", "unknown")),
     )

@@ -1,13 +1,16 @@
 import React, { createContext, useContext, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../../stores/useAuthStore";
+import { useChatStore } from "../../stores/useChatStore";
+import type { AuthUser } from "../../types/api";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (email: string) => Promise<boolean>;
-  register: (name: string, email: string) => Promise<boolean>;
-  logout: () => void;
-  user: any;
+  isLoading: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  user: AuthUser | null;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -15,9 +18,18 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const auth = useAuthStore();
 
+  useEffect(() => {
+    void auth.initialize();
+  }, [auth.initialize]);
+
+  useEffect(() => {
+    useChatStore.getState().setStorageOwner(auth.user?.id ?? null);
+  }, [auth.user?.id]);
+
   return (
     <AuthContext.Provider value={{
       isAuthenticated: auth.isAuthenticated,
+      isLoading: auth.status === "idle" || auth.status === "loading",
       login: auth.login,
       register: auth.register,
       logout: auth.logout,
@@ -41,20 +53,20 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     // For development convenience, we'll allow navigation or redirect if not authenticated.
     // If not authenticated, redirect to /login
-    if (!isAuthenticated) {
+    if (!isLoading && !isAuthenticated) {
       navigate("/login", { replace: true, state: { from: location } });
     }
-  }, [isAuthenticated, navigate, location]);
+  }, [isAuthenticated, isLoading, navigate, location]);
 
-  // If authenticated, render children. Otherwise render placeholder while redirecting
-  return isAuthenticated ? <>{children}</> : (
+  // Avoid redirect flicker while the HttpOnly session cookie is checked.
+  return !isLoading && isAuthenticated ? <>{children}</> : (
     <div className="flex h-screen w-screen items-center justify-center bg-background">
       <div className="flex flex-col items-center space-y-4">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-gold-500 border-t-transparent" />

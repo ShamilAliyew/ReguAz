@@ -4,8 +4,7 @@ import { useChatStore } from "../stores/useChatStore";
 
 export function useChat() {
   const queryClient = useQueryClient();
-  const { 
-    activeSessionId, 
+  const {
     addUserMessage, 
     appendStreamChunk, 
     finalizeMessage,
@@ -18,19 +17,19 @@ export function useChat() {
       setIsGenerating(true);
       
       // 1. Add user message to local state
-      addUserMessage(question);
+      const { sessionId: requestSessionId } = addUserMessage(question);
       
       // Create a unique temporary message ID for the assistant streaming response
       const assistantMessageId = "msg-assistant-" + Date.now();
       
       // Initialize assistant placeholder message in store
-      appendStreamChunk(assistantMessageId, ""); 
+      appendStreamChunk(assistantMessageId, "", requestSessionId);
 
       try {
         // 2. Query backend / mock service
         const response = await apiService.postChat(
           question,
-          activeSessionId,
+          requestSessionId,
           selectedModel,
         );
         
@@ -44,7 +43,7 @@ export function useChat() {
           const interval = setInterval(() => {
             if (currentIndex < words.length) {
               const chunk = words[currentIndex] + (currentIndex < words.length - 1 ? " " : "");
-              appendStreamChunk(assistantMessageId, chunk);
+              appendStreamChunk(assistantMessageId, chunk, requestSessionId);
               currentIndex++;
             } else {
               clearInterval(interval);
@@ -58,6 +57,7 @@ export function useChat() {
                 response.pipeline_version,
                 response.warnings,
                 response.model,
+                requestSessionId,
               );
               setIsGenerating(false);
               resolve(response);
@@ -70,7 +70,13 @@ export function useChat() {
         finalizeMessage(
           assistantMessageId,
           "Xəta baş verdi: Normativ aktların araşdırılması zamanı serverlə əlaqə qurulmadı. Zəhmət olmasa tənzimləmə parametrlərini yoxlayın.",
-          []
+          [],
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          requestSessionId,
         );
         throw error;
       }

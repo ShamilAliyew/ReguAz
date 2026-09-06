@@ -1,4 +1,15 @@
 export type MessageRole = "user" | "assistant";
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  created_at: string;
+}
+
+export interface AuthResponse {
+  user: AuthUser;
+}
 export type LLMModelId =
   | "gemma"
   | "nvidia_gpt_oss"

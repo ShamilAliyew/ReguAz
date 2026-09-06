@@ -26,6 +26,7 @@ class AppState:
     document_service: Any | None = None
     artifact_store: Any | None = None
     speech_service: Any | None = None
+    auth_database: Any | None = None
     pipeline_version: str = "v1"
     is_ready: bool = False
     startup_time_s: float | None = None
@@ -42,6 +43,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         settings.APP_ENV,
     )
     try:
+        _load_auth(state, settings)
         if state.pipeline_version == "v2":
             _load_v2(state, settings)
         elif state.pipeline_version == "v1":
@@ -59,6 +61,11 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         )
         yield
     finally:
+        if state.auth_database is not None:
+            try:
+                state.auth_database.close()
+            except Exception:
+                logger.warning("auth database shutdown failed", exc_info=True)
         if state.speech_service is not None:
             try:
                 await state.speech_service.aclose()
@@ -90,6 +97,23 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             except Exception:
                 logger.warning("LLM shutdown failed", exc_info=True)
         state.is_ready = False
+
+
+def _load_auth(state: AppState, settings: Settings) -> None:
+    if not settings.AUTH_ENABLED:
+        logger.info("authentication is disabled for this environment")
+        return
+    if settings.DATABASE_URL is None:
+        raise RuntimeError("AUTH_ENABLED requires DATABASE_URL")
+
+    from backend.app.auth.database import AuthDatabase
+
+    database_url = settings.DATABASE_URL.get_secret_value().strip()
+    if not database_url:
+        raise RuntimeError("AUTH_ENABLED requires a non-empty DATABASE_URL")
+    state.auth_database = AuthDatabase(database_url)
+    state.auth_database.initialize()
+    logger.info("authentication database initialized")
 
 
 def _load_speech(state: AppState, settings: Settings) -> None:
@@ -139,6 +163,13 @@ def _load_v2(state: AppState, settings: Settings) -> None:
     state.retriever = HybridV2Retriever(
         v2_root=v2_root,
         qdrant_path=qdrant_path,
+        qdrant_url=settings.QDRANT_URL,
+        qdrant_api_key=(
+            settings.QDRANT_API_KEY.get_secret_value()
+            if settings.QDRANT_API_KEY is not None
+            else None
+        ),
+        qdrant_timeout_seconds=settings.QDRANT_TIMEOUT_SECONDS,
         alias=settings.V2_QDRANT_ALIAS,
         local_files_only=settings.V2_LOCAL_FILES_ONLY,
         artifact_store=state.artifact_store,

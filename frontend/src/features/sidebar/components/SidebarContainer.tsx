@@ -2,50 +2,28 @@ import React, { useState } from "react";
 import { 
   MessageSquarePlus, 
   Search, 
-  Settings, 
-  Bookmark, 
-  LogOut, 
   ChevronLeft, 
   ChevronRight, 
   FileText,
-  Trash2,
-  Sliders,
-  Moon,
-  Sun
+  Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useUIStore } from "@/stores/useUIStore";
 import { useChatStore } from "@/stores/useChatStore";
 import { useAuth } from "@/app/providers/AuthProvider";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
-} from "@/components/ui/dialog";
-import { apiService } from "@/services/api";
+import { ProfileMenu } from "./ProfileMenu";
 
 export const SidebarContainer: React.FC = () => {
   const { sidebarOpen, toggleSidebar, theme, toggleTheme } = useUIStore();
   const { history, activeSessionId, createNewSession, deleteSession, setActiveSessionId } = useChatStore();
   const { user, logout } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [useMock, setUseMock] = useState(apiService.isMockEnabled());
 
   const filteredHistory = history.filter((item) =>
     item.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const handleToggleMock = (checked: boolean) => {
-    setUseMock(checked);
-    apiService.setMockEnabled(checked);
-  };
 
   return (
     <div
@@ -170,128 +148,15 @@ export const SidebarContainer: React.FC = () => {
 
       <Separator />
 
-      {/* Settings / Bookmarks Placeholder Footer */}
-      <div className="p-2 space-y-1">
-        <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-          <DialogTrigger asChild>
-            {sidebarOpen ? (
-              <Button
-                variant="ghost"
-                className="w-full justify-start gap-3 text-xs text-muted-foreground hover:text-foreground"
-              >
-                <Settings className="h-4 w-4" />
-                <span>Nizamlamalar</span>
-              </Button>
-            ) : (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-full text-muted-foreground"
-                title="Nizamlamalar"
-              >
-                <Settings className="h-4 w-4" />
-              </Button>
-            )}
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Sistem Nizamlamaları</DialogTitle>
-              <DialogDescription>
-                ReguAZ interfeys parametrələrini və API konfiqurasiyalarını idarə edin.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4 text-sm">
-              <div className="flex items-center justify-between border-b pb-3">
-                <div className="space-y-0.5 text-left">
-                  <p className="font-semibold">Qaranlıq rejim</p>
-                  <p className="text-xs text-muted-foreground">Interfeysin mövzusunu dəyişin</p>
-                </div>
-                <Button variant="outline" size="sm" onClick={toggleTheme}>
-                  {theme === "light" ? <Moon className="h-4 w-4 mr-2" /> : <Sun className="h-4 w-4 mr-2" />}
-                  {theme === "light" ? "Qaranlıq rejim" : "Aydınlıq rejim"}
-                </Button>
-              </div>
-              <div className="flex items-center justify-between pb-1">
-                <div className="space-y-0.5 text-left">
-                  <p className="font-semibold flex items-center gap-1.5">
-                    <Sliders className="h-4 w-4 text-gold-500" />
-                    Simulyasiya Rejimi (Mock API)
-                  </p>
-                  <p className="text-xs text-muted-foreground">Real backend yoxdursa, mock data istifadə edin</p>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={useMock}
-                  onChange={(e) => handleToggleMock(e.target.checked)}
-                  className="w-9 h-5 bg-gray-200 rounded-full appearance-none checked:bg-gold-500 relative before:content-[''] before:absolute before:w-4 before:h-4 before:bg-white before:rounded-full before:top-[2px] before:left-[2px] before:transition-transform checked:before:translate-x-4 cursor-pointer"
-                />
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {sidebarOpen ? (
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-3 text-xs text-muted-foreground hover:text-foreground opacity-50 cursor-not-allowed"
-            title="Gələcək modul"
-          >
-            <Bookmark className="h-4 w-4" />
-            <span>Seçilmişlər (Tezliklə)</span>
-          </Button>
-        ) : (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="w-full text-muted-foreground opacity-50 cursor-not-allowed"
-            title="Seçilmişlər"
-          >
-            <Bookmark className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
-
-      <Separator />
-
-      {/* User Profile Info */}
+      {/* Profile menu: settings, bookmarks and logout */}
       <div className="p-3">
-        {sidebarOpen ? (
-          <div className="flex items-center justify-between bg-secondary/50 dark:bg-navy-900/40 p-2 rounded-xl">
-            <div className="flex items-center gap-2 truncate">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-navy-900 text-white dark:bg-gold-500 dark:text-navy-950 font-bold">
-                  {user?.name?.slice(0, 2).toUpperCase() || "SA"}
-                </AvatarFallback>
-              </Avatar>
-              <div className="text-left truncate">
-                <p className="text-xs font-bold truncate">{user?.name || "Shamil Aliyev"}</p>
-                <p className="text-[10px] text-muted-foreground truncate">{user?.email || "shamil@cbar.az"}</p>
-              </div>
-            </div>
-            <button
-              onClick={logout}
-              className="text-muted-foreground hover:text-red-500 p-1.5 rounded transition-colors"
-              title="Çıxış"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center">
-            <Avatar className="h-8 w-8 mb-2">
-              <AvatarFallback className="bg-navy-900 text-white dark:bg-gold-500 dark:text-navy-950 font-bold">
-                {user?.name?.slice(0, 2).toUpperCase() || "SA"}
-              </AvatarFallback>
-            </Avatar>
-            <button
-              onClick={logout}
-              className="text-muted-foreground hover:text-red-500 transition-colors p-1"
-              title="Çıxış"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
-          </div>
-        )}
+        <ProfileMenu
+          sidebarOpen={sidebarOpen}
+          user={user}
+          theme={theme}
+          toggleTheme={toggleTheme}
+          logout={logout}
+        />
       </div>
     </div>
   );

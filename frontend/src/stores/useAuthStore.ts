@@ -1,64 +1,61 @@
 import { create } from "zustand";
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
+import { apiService } from "../services/api";
+import type { AuthUser } from "../types/api";
+
+type AuthStatus = "idle" | "loading" | "authenticated" | "anonymous";
 
 interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
+  status: AuthStatus;
   isAuthenticated: boolean;
-  login: (email: string) => Promise<boolean>;
-  register: (name: string, email: string) => Promise<boolean>;
-  logout: () => void;
+  initialize: () => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => {
-  // Read initial session from localStorage
-  const getInitialUser = (): User | null => {
-    const saved = localStorage.getItem("reguaz-user");
-    return saved ? JSON.parse(saved) : null;
-  };
+let initializationPromise: Promise<void> | null = null;
 
-  const initialUser = getInitialUser();
+export const useAuthStore = create<AuthState>((set, get) => ({
+  user: null,
+  status: "idle",
+  isAuthenticated: false,
 
-  return {
-    user: initialUser,
-    isAuthenticated: !!initialUser,
+  initialize: async () => {
+    if (get().status === "authenticated" || get().status === "anonymous") return;
+    if (initializationPromise) return initializationPromise;
 
-    login: async (email: string) => {
-      // Mock network latency
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      
-      const mockUser: User = {
-        id: "usr-1",
-        name: "Shamil Aliyev",
-        email: email,
-      };
+    set({ status: "loading" });
+    initializationPromise = apiService
+      .getCurrentUser()
+      .then(({ user }) => {
+        set({ user, status: "authenticated", isAuthenticated: true });
+      })
+      .catch(() => {
+        set({ user: null, status: "anonymous", isAuthenticated: false });
+      })
+      .finally(() => {
+        initializationPromise = null;
+      });
+    return initializationPromise;
+  },
 
-      localStorage.setItem("reguaz-user", JSON.stringify(mockUser));
-      set({ user: mockUser, isAuthenticated: true });
-      return true;
-    },
+  login: async (email, password) => {
+    const { user } = await apiService.login(email, password);
+    set({ user, status: "authenticated", isAuthenticated: true });
+  },
 
-    register: async (name: string, email: string) => {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      
-      const mockUser: User = {
-        id: "usr-" + Math.random().toString(36).substr(2, 9),
-        name,
-        email,
-      };
+  register: async (name, email, password) => {
+    const { user } = await apiService.register(name, email, password);
+    set({ user, status: "authenticated", isAuthenticated: true });
+  },
 
-      localStorage.setItem("reguaz-user", JSON.stringify(mockUser));
-      set({ user: mockUser, isAuthenticated: true });
-      return true;
-    },
-
-    logout: () => {
-      localStorage.removeItem("reguaz-user");
-      set({ user: null, isAuthenticated: false });
-    },
-  };
-});
+  logout: async () => {
+    try {
+      await apiService.logout();
+    } finally {
+      set({ user: null, status: "anonymous", isAuthenticated: false });
+    }
+  },
+}));

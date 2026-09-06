@@ -85,11 +85,18 @@ class HybridV2Settings:
 class HybridV2Retriever:
     """Dense + learned sparse + BM25, equal-weight RRF, then cross-encoder."""
 
+    @property
+    def qdrant_mode(self) -> str:
+        return str(getattr(self._qdrant, "mode", "unknown"))
+
     def __init__(
         self,
         *,
         v2_root: Path = Path("data/processed/v2"),
         qdrant_path: Path = Path("data/processed/v2/qdrant"),
+        qdrant_url: str | None = None,
+        qdrant_api_key: str | None = None,
+        qdrant_timeout_seconds: float = 30.0,
         alias: str = "reguaz_v2_current",
         settings: HybridV2Settings | None = None,
         device: str | None = None,
@@ -120,6 +127,9 @@ class HybridV2Retriever:
             self._qdrant = qdrant_retriever or QdrantV2Retriever(
                 v2_root=v2_root,
                 qdrant_path=qdrant_path,
+                qdrant_url=qdrant_url,
+                qdrant_api_key=qdrant_api_key,
+                timeout_seconds=qdrant_timeout_seconds,
                 alias=alias,
                 contract=self.contract,
             )

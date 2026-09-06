@@ -256,8 +256,10 @@ python scripts/verify_llm_module.py
 ./scripts/start_dev.sh
 ```
 
-This starts the FastAPI backend at `http://127.0.0.1:8000` and the Vite frontend
-at `http://127.0.0.1:3000`. Press `Ctrl+C` once to stop both processes. The
+This starts the local PostgreSQL authentication database, the FastAPI backend at
+`http://127.0.0.1:8000`, and the Vite frontend at `http://127.0.0.1:3000`.
+Docker Desktop must be running for PostgreSQL. Press `Ctrl+C` once to stop the
+application processes; PostgreSQL remains available for the next start. The
 scripts resolve the repository root from their own location, so they do not
 contain machine-specific paths.
 
@@ -273,6 +275,85 @@ Optional port overrides are supported without editing source files:
 ```bash
 BACKEND_PORT=8010 FRONTEND_PORT=3010 ./scripts/start_dev.sh
 ```
+
+The local database listens only on loopback port `5433`. Override it when that
+port is occupied:
+
+```bash
+POSTGRES_PORT=5434 ./scripts/start_dev.sh
+```
+
+To use an existing PostgreSQL database instead of the local Compose service:
+
+```bash
+REGUAZ_BOOTSTRAP_AUTH_DATABASE=false \
+AUTH_ENABLED=true \
+DATABASE_URL='postgresql+psycopg://user:password@host:5432/database' \
+./scripts/start_backend.sh
+```
+
+### Run with Docker Compose
+
+Docker runs the production frontend behind Nginx and proxies browser requests
+from `/api` to the private FastAPI service. Large local artefacts are mounted at
+runtime instead of being copied into images:
+
+- `data/processed/v2` is mounted read-only;
+- `data/processed/cleaned_documents` is mounted read-only for evidence and
+  citation validation;
+- `data/processed/v2/qdrant` is mounted read-write because embedded Qdrant needs
+  a file lock and WAL access;
+- the Hugging Face cache is mounted read-only;
+- `backend/reguaz/models` is mounted read-only for optional local Gemma use;
+- provider keys from the root `.env` are available only to the backend.
+
+Before starting, ensure Docker Desktop is running, the ignored V2 Qdrant
+artefacts exist, and the exact `BAAI/bge-m3` and
+`BAAI/bge-reranker-v2-m3` snapshots are present in the Hugging Face cache.
+Stop any host backend process first: embedded Qdrant permits only one process to
+open the collection.
+
+```bash
+cp .env.example .env  # only when .env does not already exist
+./scripts/start_docker.sh
+```
+
+The launcher resolves the repository and Hugging Face cache without embedding a
+developer-specific absolute path. To use a non-default cache location:
+
+```bash
+HF_CACHE_DIR=/path/to/huggingface ./scripts/start_docker.sh
+```
+
+After startup:
+
+- UI: `http://127.0.0.1:3000`
+- Backend health: `http://127.0.0.1:8000/health`
+
+Useful operations:
+
+```bash
+docker compose ps
+docker compose logs -f backend
+docker compose logs -f frontend
+docker compose down
+docker compose up --build --detach  # rebuild after dependency/source changes
+```
+
+`BACKEND_PORT` and `FRONTEND_PORT` in `.env` can change the host ports without
+changing source code. Docker Desktop runs Linux containers and cannot expose
+Apple MPS, so BGE-M3 and the reranker use CPU in this mode. Native startup with
+`./scripts/start_dev.sh` remains the lower-latency option on Apple Silicon;
+remote Groq/NVIDIA generation providers can still be selected from the Docker
+UI. Allocate at least 8 GB of memory to Docker Desktop for the two transformer
+models and the API process.
+
+### Deploy to Render
+
+The repository includes a root `render.yaml` for a public Nginx frontend,
+private FastAPI backend, and managed PostgreSQL. Production retrieval uses a
+pre-populated Qdrant Cloud collection. Follow the ordered setup and verification
+steps in [docs/render_deployment.md](docs/render_deployment.md).
 
 ### Verify the installation
 ```bash
@@ -396,7 +477,7 @@ poetry install
 | End-to-end RAG generation pipeline | ⬜ Planned | Wire retrieval directly into LLM generation as one workflow. |
 | Conversation memory | ⬜ Planned | Multi-turn context handling. |
 | Performance optimization | ⬜ Planned | Latency and throughput tuning across the pipeline. |
-| Docker deployment | ⬜ Planned | Containerized deployment. |
+| Docker deployment | ✅ Done | Production frontend image, FastAPI image, portable mounts, health checks, and Compose launcher. |
 | CI/CD | ⬜ Planned | Automated testing and deployment pipeline. |
 | Production deployment | ⬜ Planned | Monitoring, infrastructure, and go-live readiness. |
 

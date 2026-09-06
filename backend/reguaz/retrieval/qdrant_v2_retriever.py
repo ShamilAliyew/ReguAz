@@ -40,16 +40,36 @@ class QdrantV2Retriever:
         *,
         v2_root: Path = Path("data/processed/v2"),
         qdrant_path: Path = Path("data/processed/v2/qdrant"),
+        qdrant_url: str | None = None,
+        qdrant_api_key: str | None = None,
+        timeout_seconds: float = 30.0,
         alias: str = "reguaz_v2_current",
         contract: V2RetrievalContract | None = None,
         client_factory: Callable[[str], Any] | None = None,
     ) -> None:
         self.contract = contract or V2RetrievalContract.load(v2_root)
         self.qdrant_path = qdrant_path.resolve()
+        self.qdrant_url = qdrant_url.strip() if qdrant_url else None
+        if self.qdrant_url is not None and not self.qdrant_url.startswith(
+            ("http://", "https://")
+        ):
+            raise ValueError("remote Qdrant URL must use http:// or https://")
+        if timeout_seconds <= 0:
+            raise ValueError("Qdrant timeout must be positive")
         self.alias = alias
+        self.mode = "remote" if self.qdrant_url else "local_embedded"
         self._closed = False
-        factory = client_factory or (lambda path: QdrantClient(path=path))
-        self._client = factory(str(self.qdrant_path))
+        target = self.qdrant_url or str(self.qdrant_path)
+        if client_factory is not None:
+            self._client = client_factory(target)
+        elif self.qdrant_url is not None:
+            self._client = QdrantClient(
+                url=self.qdrant_url,
+                api_key=qdrant_api_key,
+                timeout=timeout_seconds,
+            )
+        else:
+            self._client = QdrantClient(path=str(self.qdrant_path))
         try:
             self.physical_collection = self._validate_collection()
         except Exception:
@@ -151,7 +171,7 @@ class QdrantV2Retriever:
         sparse_top_k: int = 30,
         filters: RetrievalFilters | Mapping[str, object] | None = None,
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-        """Issue dense and sparse requests in one local Qdrant batch call."""
+        """Issue dense and sparse requests in one Qdrant batch call."""
         if self._closed:
             raise RuntimeError("Qdrant V2 retriever is closed")
         if len(dense_vector) != self.contract.embedding_manifest.dense_dimension:

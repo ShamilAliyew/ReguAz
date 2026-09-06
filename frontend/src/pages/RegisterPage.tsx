@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ShieldCheck, Mail, Lock, User } from "lucide-react";
+import { Eye, EyeOff, ShieldCheck, Mail, Lock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -11,22 +11,31 @@ export const RegisterPage: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email) {
-      setError("Adınızı və E-poçt ünvanınızı daxil edin.");
+    if (!name || !email || !password) {
+      setError("Adınızı, e-poçt ünvanınızı və şifrənizi daxil edin.");
+      return;
+    }
+    if (password.length < 10) {
+      setError("Şifrə ən azı 10 simvol olmalıdır.");
       return;
     }
     setError("");
     setLoading(true);
     try {
-      await register(name, email);
+      await register(name, email, password);
       navigate("/dashboard");
-    } catch {
-      setError("Qeydiyyat zamanı xəta baş verdi.");
+    } catch (authError) {
+      setError(
+        authError instanceof Error
+          ? authError.message
+          : "Qeydiyyat zamanı xəta baş verdi.",
+      );
     } finally {
       setLoading(false);
     }
@@ -60,6 +69,9 @@ export const RegisterPage: React.FC = () => {
                 <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <input
                   type="text"
+                  name="name"
+                  autoComplete="name"
+                  required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Elşən Məmmədov"
@@ -74,6 +86,9 @@ export const RegisterPage: React.FC = () => {
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <input
                   type="email"
+                  name="email"
+                  autoComplete="email"
+                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@company.com"
@@ -87,12 +102,25 @@ export const RegisterPage: React.FC = () => {
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  autoComplete="new-password"
+                  minLength={10}
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-gold-500 focus:border-gold-500"
+                  className="w-full pl-10 pr-11 py-2 border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-gold-500 focus:border-gold-500"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  aria-label={showPassword ? "Şifrəni gizlət" : "Şifrəni göstər"}
+                  aria-pressed={showPassword}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-gold-500"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
               </div>
             </div>
 

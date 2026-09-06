@@ -37,6 +37,21 @@ PAYLOAD_INDEXES: tuple[tuple[str, models.PayloadSchemaType], ...] = (
 )
 
 
+def _require_ascii_environment_value(name: str, value: str) -> None:
+    invalid = [
+        f"index {index}: U+{ord(character):04X}"
+        for index, character in enumerate(value)
+        if not character.isascii()
+        or (character.isascii() and not character.isprintable())
+    ]
+    if invalid:
+        details = ", ".join(invalid[:5])
+        raise ValueError(
+            f"{name} contains hidden or non-ASCII characters ({details}); "
+            "copy the plain value again from the Qdrant dashboard"
+        )
+
+
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -69,6 +84,10 @@ class QdrantV2Settings:
     v2_root: Path = Path("data/processed/v2")
     embeddings_root: Path = Path("data/processed/v2/embeddings")
     qdrant_path: Path = Path("data/processed/v2/qdrant")
+    qdrant_url: str | None = None
+    qdrant_api_key: str | None = None
+    qdrant_timeout_seconds: float = 60.0
+    report_path: Path | None = None
     collection_prefix: str = "reguaz_v2_bge_m3"
     alias: str = "reguaz_v2_current"
     upload_batch_size: int = 128
@@ -76,8 +95,22 @@ class QdrantV2Settings:
     force_collection: bool = False
 
     def __post_init__(self) -> None:
-        if self.upload_batch_size <= 0 or self.parallel <= 0:
-            raise ValueError("upload_batch_size and parallel must be positive")
+        if (
+            self.upload_batch_size <= 0
+            or self.parallel <= 0
+            or self.qdrant_timeout_seconds <= 0
+        ):
+            raise ValueError(
+                "upload_batch_size, parallel and qdrant_timeout_seconds must be positive"
+            )
+        if self.qdrant_url is not None:
+            _require_ascii_environment_value("QDRANT_URL", self.qdrant_url)
+            if any(character in self.qdrant_url for character in "[]()"):
+                raise ValueError("QDRANT_URL must be a plain URL, not a Markdown link")
+            if not self.qdrant_url.startswith(("http://", "https://")):
+                raise ValueError("remote Qdrant URL must use http:// or https://")
+        if self.qdrant_api_key is not None:
+            _require_ascii_environment_value("QDRANT_API_KEY", self.qdrant_api_key)
 
 
 class EmbeddingArtifactReader:
@@ -165,9 +198,10 @@ class QdrantV2IngestionPipeline:
                 f"embedding/chunk count mismatch: {expected} embeddings, {len(chunks)} chunks"
             )
         qdrant_path = self.settings.qdrant_path.resolve()
-        self._validate_qdrant_target(qdrant_path)
-        qdrant_path.mkdir(parents=True, exist_ok=True)
-        client = QdrantClient(path=str(qdrant_path))
+        if self.settings.qdrant_url is None:
+            self._validate_qdrant_target(qdrant_path)
+            qdrant_path.mkdir(parents=True, exist_ok=True)
+        client = self._create_client(qdrant_path)
         try:
             exists = client.collection_exists(self.physical_collection)
             if exists and self.settings.force_collection:
@@ -199,25 +233,39 @@ class QdrantV2IngestionPipeline:
                 source_embedding_manifest_sha256=_sha256_file(
                     self.artifacts.manifest_path
                 ),
-                qdrant_path=str(qdrant_path),
-                qdrant_mode="local_embedded",
+                qdrant_path=self.settings.qdrant_url or str(qdrant_path),
+                qdrant_mode=(
+                    "remote" if self.settings.qdrant_url else "local_embedded"
+                ),
                 physical_collection=self.physical_collection,
                 alias=self.settings.alias,
                 point_count=point_count,
                 expected_point_count=expected,
                 payload_indexes=[field for field, _ in PAYLOAD_INDEXES],
-                payload_indexes_effective=False,
+                payload_indexes_effective=self.settings.qdrant_url is not None,
                 dense_smoke_result_count=dense_hits,
                 sparse_smoke_result_count=sparse_hits,
                 completed_at=datetime.now(timezone.utc),
             )
-            _write_report(self.settings.v2_root / "qdrant_ingestion.json", report)
+            report_path = self.settings.report_path or (
+                self.settings.v2_root / "qdrant_ingestion.json"
+            )
+            _write_report(report_path, report)
             return report
         except Exception:
             # Never publish an alias to a collection that failed validation.
             raise
         finally:
             client.close()
+
+    def _create_client(self, qdrant_path: Path) -> QdrantClient:
+        if self.settings.qdrant_url is not None:
+            return QdrantClient(
+                url=self.settings.qdrant_url,
+                api_key=self.settings.qdrant_api_key,
+                timeout=self.settings.qdrant_timeout_seconds,
+            )
+        return QdrantClient(path=str(qdrant_path))
 
     def _points(self, chunks: dict[str, object]) -> Iterator[models.PointStruct]:
         for record in self.artifacts.validate_and_iter():
@@ -424,6 +472,7 @@ def _sha256_file(path: Path) -> str:
 
 
 def _write_report(path: Path, report: QdrantIngestionReport) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(".json.tmp")
     temporary.write_text(
         json.dumps(report.model_dump(mode="json"), ensure_ascii=False, indent=2) + "\n",

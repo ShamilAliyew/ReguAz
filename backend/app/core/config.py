@@ -55,8 +55,11 @@ class Settings(BaseSettings):
 
     # ── CORS ──────────────────────────────────────────────────────────────────
     # In development the React Vite dev server typically runs on 5173.
-    CORS_ORIGINS: List[str] = ["*"]
-    CORS_ALLOW_CREDENTIALS: bool = False
+    CORS_ORIGINS: List[str] = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
+    CORS_ALLOW_CREDENTIALS: bool = True
     CORS_ALLOW_METHODS: List[str] = ["GET", "POST", "OPTIONS"]
     CORS_ALLOW_HEADERS: List[str] = ["*"]
     CORS_EXPOSE_HEADERS: List[str] = [
@@ -73,7 +76,17 @@ class Settings(BaseSettings):
     V2_ROOT: str = "data/processed/v2"
     V2_QDRANT_DIR: str = "data/processed/v2/qdrant"
     V2_QDRANT_ALIAS: str = "reguaz_v2_current"
+    QDRANT_URL: str | None = None
+    QDRANT_API_KEY: SecretStr | None = None
+    QDRANT_TIMEOUT_SECONDS: float = 30.0
     V2_LOCAL_FILES_ONLY: bool = True
+
+    # ── Authentication ────────────────────────────────────────────────────────
+    AUTH_ENABLED: bool = False
+    DATABASE_URL: SecretStr | None = None
+    AUTH_COOKIE_NAME: str = "reguaz_session"
+    AUTH_COOKIE_SECURE: bool = False
+    AUTH_SESSION_TTL_DAYS: int = 7
 
     # ── Retrieval ─────────────────────────────────────────────────────────────
     EMBEDDING_MODEL: str = "bge_m3"

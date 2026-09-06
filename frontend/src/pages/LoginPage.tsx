@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ShieldCheck, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, ShieldCheck, Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/app/providers/AuthProvider";
@@ -11,6 +11,7 @@ export const LoginPage: React.FC = () => {
   const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -18,17 +19,21 @@ export const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      setError("E-poçt ünvanınızı daxil edin.");
+    if (!email || !password) {
+      setError("E-poçt ünvanınızı və şifrənizi daxil edin.");
       return;
     }
     setError("");
     setLoading(true);
     try {
-      await login(email);
+      await login(email, password);
       navigate(from, { replace: true });
-    } catch {
-      setError("Giriş zamanı xəta baş verdi.");
+    } catch (authError) {
+      setError(
+        authError instanceof Error
+          ? authError.message
+          : "Giriş zamanı xəta baş verdi.",
+      );
     } finally {
       setLoading(false);
     }
@@ -62,6 +67,9 @@ export const LoginPage: React.FC = () => {
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <input
                   type="email"
+                  name="email"
+                  autoComplete="email"
+                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@company.com"
@@ -78,12 +86,24 @@ export const LoginPage: React.FC = () => {
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  autoComplete="current-password"
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-gold-500 focus:border-gold-500"
+                  className="w-full pl-10 pr-11 py-2 border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-1 focus:ring-gold-500 focus:border-gold-500"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  aria-label={showPassword ? "Şifrəni gizlət" : "Şifrəni göstər"}
+                  aria-pressed={showPassword}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-sm text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-gold-500"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
               </div>
             </div>
 

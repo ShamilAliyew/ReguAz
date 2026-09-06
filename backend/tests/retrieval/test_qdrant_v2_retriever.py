@@ -190,6 +190,35 @@ def test_missing_alias_fails_fast(v2_root: Path) -> None:
     assert client.closed is True
 
 
+def test_remote_qdrant_uses_url_without_opening_local_storage(v2_root: Path) -> None:
+    contract = V2RetrievalContract.load(v2_root)
+    client = FakeQdrantClient(contract=contract, payload=first_child_payload(v2_root))
+    targets: list[str] = []
+
+    retriever = QdrantV2Retriever(
+        contract=contract,
+        qdrant_url="https://example.qdrant.io:6333",
+        qdrant_api_key="secret-not-forwarded-to-test-factory",
+        client_factory=lambda target: targets.append(target) or client,
+    )
+
+    assert targets == ["https://example.qdrant.io:6333"]
+    assert retriever.mode == "remote"
+    retriever.close()
+    assert client.closed is True
+
+
+def test_remote_qdrant_rejects_invalid_url_before_client_creation(
+    v2_root: Path,
+) -> None:
+    with pytest.raises(ValueError, match="must use http"):
+        QdrantV2Retriever(
+            contract=V2RetrievalContract.load(v2_root),
+            qdrant_url="example.qdrant.io:6333",
+            client_factory=lambda _: pytest.fail("client must not be created"),
+        )
+
+
 def test_contract_detects_manifest_count_mismatch(v2_root: Path) -> None:
     manifest_path = v2_root / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))

@@ -7,8 +7,12 @@ import {
 } from "../types/api";
 import type { LLMModelId, LLMModelOption } from "../types/api";
 import type { SpeechAudioResult, SpeechStatus } from "../types/api";
+import type { AuthResponse } from "../types/api";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
+const apiFetch = (path: string, init?: RequestInit): Promise<Response> =>
+  fetch(`${API_URL}${path}`, { credentials: "include", ...init });
 
 // Keep model selection usable while the dynamic backend catalog is loading or
 // temporarily unreachable. The backend remains authoritative and validates the
@@ -88,6 +92,38 @@ export const apiService = {
     localStorage.setItem("reguaz-use-mock-api", enabled ? "true" : "false");
   },
 
+  register: async (
+    name: string,
+    email: string,
+    password: string,
+  ): Promise<AuthResponse> => {
+    const res = await apiFetch("/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
+    return handleResponse<AuthResponse>(res);
+  },
+
+  login: async (email: string, password: string): Promise<AuthResponse> => {
+    const res = await apiFetch("/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    return handleResponse<AuthResponse>(res);
+  },
+
+  getCurrentUser: async (): Promise<AuthResponse> => {
+    const res = await apiFetch("/auth/me");
+    return handleResponse<AuthResponse>(res);
+  },
+
+  logout: async (): Promise<void> => {
+    const res = await apiFetch("/auth/logout", { method: "POST" });
+    if (!res.ok && res.status !== 401) await handleResponse<never>(res);
+  },
+
   // 1. GET /health
   getHealth: async (): Promise<{ status: string; app: string }> => {
     if (useMockApi()) {
@@ -95,7 +131,7 @@ export const apiService = {
     }
     
     try {
-      const res = await fetch(`${API_URL}/health`);
+      const res = await apiFetch("/health");
       return handleResponse<{ status: string; app: string }>(res);
     } catch (error) {
       console.warn("Failed to connect to backend, falling back to Mock API:", error);
@@ -113,7 +149,7 @@ export const apiService = {
       return mockService.postChat(question, sessionId, llmModel);
     }
 
-    const res = await fetch(`${API_URL}/chat`, {
+    const res = await apiFetch("/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -132,7 +168,7 @@ export const apiService = {
       return mockService.getLlmModels();
     }
     try {
-      const res = await fetch(`${API_URL}/llm-models`);
+      const res = await apiFetch("/llm-models");
       return handleResponse<LLMModelOption[]>(res);
     } catch (error) {
       console.warn(
@@ -146,7 +182,7 @@ export const apiService = {
   getSpeechStatus: async (): Promise<SpeechStatus> => {
     if (useMockApi()) return mockService.getSpeechStatus();
     try {
-      const res = await fetch(`${API_URL}/speech/status`);
+      const res = await apiFetch("/speech/status");
       return handleResponse<SpeechStatus>(res);
     } catch {
       return {
@@ -164,7 +200,7 @@ export const apiService = {
     signal?: AbortSignal,
   ): Promise<SpeechAudioResult> => {
     if (useMockApi()) throw new Error("Səsləndirmə mock rejimində deaktivdir.");
-    const res = await fetch(`${API_URL}/speech`, {
+    const res = await apiFetch("/speech", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text }),
@@ -195,7 +231,7 @@ export const apiService = {
     }
 
     try {
-      const res = await fetch(`${API_URL}/documents`);
+      const res = await apiFetch("/documents");
       return handleResponse<DocumentMetadataResponse[]>(res);
     } catch (e) {
       // If endpoint is not found or not connected, return mock adapter list
@@ -210,7 +246,7 @@ export const apiService = {
       return mockService.getDocumentMetadata(documentId);
     }
 
-    const res = await fetch(`${API_URL}/documents/${encodeURIComponent(documentId)}`);
+    const res = await apiFetch(`/documents/${encodeURIComponent(documentId)}`);
     return handleResponse<DocumentMetadataResponse>(res);
   },
 
@@ -220,7 +256,7 @@ export const apiService = {
       return mockService.getDocumentPage(documentId, pageNumber);
     }
 
-    const res = await fetch(`${API_URL}/documents/${encodeURIComponent(documentId)}/page/${pageNumber}`);
+    const res = await apiFetch(`/documents/${encodeURIComponent(documentId)}/page/${pageNumber}`);
     return handleResponse<DocumentPageResponse>(res);
   },
 
@@ -230,8 +266,8 @@ export const apiService = {
       return mockService.getHighlight(documentId, chunkId);
     }
 
-    const res = await fetch(
-      `${API_URL}/documents/highlight?document_id=${encodeURIComponent(documentId)}&chunk_id=${encodeURIComponent(chunkId)}`
+    const res = await apiFetch(
+      `/documents/highlight?document_id=${encodeURIComponent(documentId)}&chunk_id=${encodeURIComponent(chunkId)}`,
     );
     return handleResponse<DocumentHighlightResponse>(res);
   },

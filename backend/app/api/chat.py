@@ -12,6 +12,7 @@ from typing import Any
 # pyrefly: ignore [missing-import]
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from backend.app.auth.dependencies import require_authenticated_user
 from backend.app.core.dependencies import get_generation_pipeline
 from backend.app.schemas.chat import ChatRequest, ChatResponse, LLMModelOption
 from backend.app.services.chat_service import ChatService
@@ -19,7 +20,7 @@ from backend.reguaz.services.generation.v2_pipeline_registry import (
     ModelUnavailableError,
 )
 
-router = APIRouter()
+router = APIRouter(dependencies=[Depends(require_authenticated_user)])
 
 
 @router.post(

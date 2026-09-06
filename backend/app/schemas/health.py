@@ -36,3 +36,6 @@ class HealthResponse(BaseModel):
     )
     pipeline_version: str = "v1"
     generation_device: str = "unknown"
+    auth_enabled: bool = False
+    auth_database_ready: bool = False
+    qdrant_mode: str = "unknown"
