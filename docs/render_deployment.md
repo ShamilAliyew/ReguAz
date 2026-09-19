@@ -119,6 +119,17 @@ The response must report:
 Then register a user, sign out, sign in again, run one legal query, open a
 citation, and request TTS once. Inspect backend logs if any stage fails.
 
+### Qdrant Cloud connection resets
+
+Keep `QDRANT_URL` as the plain cluster URL with the explicit REST port, for
+example `https://CLUSTER.cloud.qdrant.io:6333`; do not paste Markdown, quotes,
+or trailing whitespace into Render's environment value. Startup collection
+validation and V2 read operations retry transient transport failures with a
+fresh connection pool. If the dense and sparse batch endpoint remains
+temporarily unavailable, retrieval falls back to the equivalent individual
+reads without changing ranking parameters. A persistent failure is still
+surfaced instead of returning incomplete results.
+
 ## Operational limits
 
 - The first backend startup downloads pinned BGE-M3 and reranker snapshots and

@@ -4,8 +4,10 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import httpx
 import pytest
 from qdrant_client import models
+from qdrant_client.http.exceptions import ResponseHandlingException
 
 from backend.reguaz.retrieval.qdrant_v2_retriever import QdrantV2Retriever
 from backend.reguaz.retrieval.v2_contract import V2RetrievalContract
@@ -206,6 +208,70 @@ def test_remote_qdrant_uses_url_without_opening_local_storage(v2_root: Path) -> 
     assert retriever.mode == "remote"
     retriever.close()
     assert client.closed is True
+
+
+def test_remote_batch_search_reconnects_after_transient_transport_failure(
+    v2_root: Path,
+) -> None:
+    contract = V2RetrievalContract.load(v2_root)
+    payload = first_child_payload(v2_root)
+    failed = FakeQdrantClient(contract=contract, payload=payload)
+    healthy = FakeQdrantClient(contract=contract, payload=payload)
+
+    def fail_batch(**kwargs: object) -> list[object]:
+        failed.calls.append(kwargs)
+        raise ResponseHandlingException(httpx.ConnectError("connection reset"))
+
+    failed.query_batch_points = fail_batch  # type: ignore[method-assign]
+    clients = iter([failed, healthy])
+    retriever = QdrantV2Retriever(
+        contract=contract,
+        qdrant_url="https://example.qdrant.io:6333",
+        qdrant_api_key="secret",
+        client_factory=lambda _: next(clients),
+    )
+
+    dense, sparse = retriever.batch_search(
+        [1.0] + [0.0] * 1023,
+        SparseEmbedding(indices=[17], values=[0.5]),
+    )
+
+    assert failed.closed is True
+    assert dense[0]["chunk_id"] == payload["chunk_id"]
+    assert sparse[0]["chunk_id"] == payload["chunk_id"]
+    assert any("requests" in call for call in healthy.calls)
+    retriever.close()
+    assert healthy.closed is True
+
+
+def test_remote_startup_validation_reconnects_after_transient_transport_failure(
+    v2_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    contract = V2RetrievalContract.load(v2_root)
+    payload = first_child_payload(v2_root)
+    failed = FakeQdrantClient(contract=contract, payload=payload)
+    healthy = FakeQdrantClient(contract=contract, payload=payload)
+
+    def fail_aliases() -> object:
+        raise ResponseHandlingException(httpx.ConnectError("connection reset"))
+
+    failed.get_aliases = fail_aliases  # type: ignore[method-assign]
+    clients = iter([failed, healthy])
+    monkeypatch.setattr(
+        "backend.reguaz.retrieval.qdrant_v2_retriever.time.sleep", lambda _: None
+    )
+
+    retriever = QdrantV2Retriever(
+        contract=contract,
+        qdrant_url="https://example.qdrant.io:6333",
+        qdrant_api_key="secret",
+        client_factory=lambda _: next(clients),
+    )
+
+    assert retriever.physical_collection == "physical-v2"
+    assert failed.closed is True
+    retriever.close()
+    assert healthy.closed is True
 
 
 def test_remote_qdrant_rejects_invalid_url_before_client_creation(

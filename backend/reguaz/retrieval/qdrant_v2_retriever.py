@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import math
+import threading
+import time
 from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any
 
+import httpx
 from qdrant_client import QdrantClient, models
+from qdrant_client.http.exceptions import ResponseHandlingException
 
 from backend.reguaz.retrieval.v2_contract import (
     RetrievalFilters,
@@ -13,6 +17,10 @@ from backend.reguaz.retrieval.v2_contract import (
 )
 from backend.reguaz.services.embeddings.v2_models import SparseEmbedding
 from backend.reguaz.services.ingestion.point_ids import v2_point_id
+from backend.reguaz.utils.logger import get_logger
+
+
+logger = get_logger(__name__, "retrieval.log")
 
 
 REQUIRED_PAYLOAD_FIELDS = (
@@ -59,17 +67,11 @@ class QdrantV2Retriever:
         self.alias = alias
         self.mode = "remote" if self.qdrant_url else "local_embedded"
         self._closed = False
-        target = self.qdrant_url or str(self.qdrant_path)
-        if client_factory is not None:
-            self._client = client_factory(target)
-        elif self.qdrant_url is not None:
-            self._client = QdrantClient(
-                url=self.qdrant_url,
-                api_key=qdrant_api_key,
-                timeout=timeout_seconds,
-            )
-        else:
-            self._client = QdrantClient(path=str(self.qdrant_path))
+        self._qdrant_api_key = qdrant_api_key
+        self._timeout_seconds = timeout_seconds
+        self._client_factory = client_factory
+        self._reconnect_lock = threading.Lock()
+        self._client = self._create_client()
         try:
             self.physical_collection = self._validate_collection()
         except Exception:
@@ -77,17 +79,27 @@ class QdrantV2Retriever:
             raise
 
     def _validate_collection(self) -> str:
+        return str(
+            self._remote_read(
+                "validate_collection",
+                self._validate_collection_with_client,
+                attempts=5,
+                base_delay_seconds=0.5,
+            )
+        )
+
+    def _validate_collection_with_client(self, client: Any) -> str:
         aliases = {
             item.alias_name: item.collection_name
-            for item in self._client.get_aliases().aliases
+            for item in client.get_aliases().aliases
         }
         physical = aliases.get(self.alias)
         if physical is None:
             raise ValueError(f"required Qdrant alias does not exist: {self.alias}")
-        if not self._client.collection_exists(physical):
+        if not client.collection_exists(physical):
             raise ValueError(f"Qdrant alias target does not exist: {physical}")
 
-        info = self._client.get_collection(physical)
+        info = client.get_collection(physical)
         metadata = info.config.metadata or {}
         embedding = self.contract.embedding_manifest
         chunks = self.contract.chunk_manifest
@@ -115,7 +127,7 @@ class QdrantV2Retriever:
         if "sparse" not in sparse:
             raise ValueError("Qdrant V2 collection is missing named sparse vector")
 
-        exact_count = self._client.count(collection_name=physical, exact=True).count
+        exact_count = client.count(collection_name=physical, exact=True).count
         if exact_count != chunks.child_count:
             raise ValueError(
                 "Qdrant V2 point count mismatch: "
@@ -181,29 +193,46 @@ class QdrantV2Retriever:
         if dense_top_k <= 0 or sparse_top_k <= 0:
             raise ValueError("top_k must be positive")
         normalized = RetrievalFilters.from_value(filters)
-        response = self._client.query_batch_points(
-            collection_name=self.alias,
-            requests=[
-                models.QueryRequest(
-                    query=[float(value) for value in dense_vector],
-                    using="dense",
-                    filter=_qdrant_filter(normalized),
-                    limit=dense_top_k,
-                    with_payload=["chunk_id"],
-                    with_vector=False,
+        requests = [
+            models.QueryRequest(
+                query=[float(value) for value in dense_vector],
+                using="dense",
+                filter=_qdrant_filter(normalized),
+                limit=dense_top_k,
+                with_payload=["chunk_id"],
+                with_vector=False,
+            ),
+            models.QueryRequest(
+                query=models.SparseVector(
+                    indices=sparse_vector.indices, values=sparse_vector.values
                 ),
-                models.QueryRequest(
-                    query=models.SparseVector(
-                        indices=sparse_vector.indices, values=sparse_vector.values
-                    ),
-                    using="sparse",
-                    filter=_qdrant_filter(normalized),
-                    limit=sparse_top_k,
-                    with_payload=["chunk_id"],
-                    with_vector=False,
+                using="sparse",
+                filter=_qdrant_filter(normalized),
+                limit=sparse_top_k,
+                with_payload=["chunk_id"],
+                with_vector=False,
+            ),
+        ]
+        try:
+            response = self._remote_read(
+                "query_batch_points",
+                lambda client: client.query_batch_points(
+                    collection_name=self.alias,
+                    requests=requests,
                 ),
-            ],
-        )
+                attempts=2,
+            )
+        except Exception as exc:
+            if not self._is_transient_transport_error(exc):
+                raise
+            logger.warning(
+                "Qdrant batch search remained unavailable after retry; "
+                "falling back to individual dense and sparse reads"
+            )
+            self._replace_remote_client(self._client)
+            return self.dense_search(
+                dense_vector, top_k=dense_top_k, filters=normalized
+            ), self.sparse_search(sparse_vector, top_k=sparse_top_k, filters=normalized)
         if len(response) != 2:
             raise RuntimeError("Qdrant V2 batch search returned an unexpected response")
         return self._lean_results(response[0].points), self._lean_results(
@@ -223,14 +252,17 @@ class QdrantV2Retriever:
         if top_k <= 0:
             raise ValueError("top_k must be positive")
         normalized_filters = RetrievalFilters.from_value(filters)
-        response = self._client.query_points(
-            collection_name=self.alias,
-            query=query,
-            using=using,
-            query_filter=_qdrant_filter(normalized_filters),
-            limit=top_k,
-            with_payload=["chunk_id"],
-            with_vectors=False,
+        response = self._remote_read(
+            f"query_points:{using}",
+            lambda client: client.query_points(
+                collection_name=self.alias,
+                query=query,
+                using=using,
+                query_filter=_qdrant_filter(normalized_filters),
+                limit=top_k,
+                with_payload=["chunk_id"],
+                with_vectors=False,
+            ),
         )
         return self._lean_results(response.points)
 
@@ -267,11 +299,14 @@ class QdrantV2Retriever:
         }
         if not expected:
             return {}
-        points = self._client.retrieve(
-            collection_name=self.alias,
-            ids=list(expected.values()),
-            with_payload=True,
-            with_vectors=False,
+        points = self._remote_read(
+            "retrieve_final_payloads",
+            lambda client: client.retrieve(
+                collection_name=self.alias,
+                ids=list(expected.values()),
+                with_payload=True,
+                with_vectors=False,
+            ),
         )
         by_id = {str(point.id): point for point in points}
         output: dict[str, dict[str, Any]] = {}
@@ -291,6 +326,72 @@ class QdrantV2Retriever:
                 )
             output[chunk_id] = payload
         return output
+
+    def _create_client(self) -> Any:
+        target = self.qdrant_url or str(self.qdrant_path)
+        if self._client_factory is not None:
+            return self._client_factory(target)
+        if self.qdrant_url is not None:
+            return QdrantClient(
+                url=self.qdrant_url,
+                api_key=self._qdrant_api_key,
+                timeout=self._timeout_seconds,
+                check_compatibility=False,
+            )
+        return QdrantClient(path=str(self.qdrant_path))
+
+    def _remote_read(
+        self,
+        operation_name: str,
+        operation: Callable[[Any], Any],
+        *,
+        attempts: int = 3,
+        base_delay_seconds: float = 0.2,
+    ) -> Any:
+        """Retry transient remote transport failures with a fresh HTTP pool."""
+        if self.mode != "remote":
+            return operation(self._client)
+        for attempt in range(1, attempts + 1):
+            client = self._client
+            try:
+                return operation(client)
+            except Exception as exc:
+                if not self._is_transient_transport_error(exc) or attempt >= attempts:
+                    raise
+                logger.warning(
+                    "Transient Qdrant transport failure operation=%s attempt=%d/%d; "
+                    "reconnecting before retry",
+                    operation_name,
+                    attempt,
+                    attempts,
+                )
+                self._replace_remote_client(client)
+                time.sleep(base_delay_seconds * (2 ** (attempt - 1)))
+        raise AssertionError("Qdrant retry loop exited unexpectedly")
+
+    def _replace_remote_client(self, failed_client: Any) -> None:
+        with self._reconnect_lock:
+            if self._closed:
+                raise RuntimeError("Qdrant V2 retriever is closed")
+            if self._client is not failed_client:
+                return
+            replacement = self._create_client()
+            self._client = replacement
+            failed_client.close()
+
+    @staticmethod
+    def _is_transient_transport_error(exc: Exception) -> bool:
+        current: BaseException | None = exc
+        visited: set[int] = set()
+        while current is not None and id(current) not in visited:
+            visited.add(id(current))
+            if isinstance(current, httpx.TransportError):
+                return True
+            if isinstance(current, ResponseHandlingException):
+                current = current.source
+                continue
+            current = current.__cause__ or current.__context__
+        return False
 
     def close(self) -> None:
         if self._closed:

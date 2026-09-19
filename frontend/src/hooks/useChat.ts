@@ -67,9 +67,13 @@ export function useChat() {
 
       } catch (error) {
         setIsGenerating(false);
+        const detail =
+          error instanceof Error && error.message.trim()
+            ? error.message.trim()
+            : "Server sorğunu emal edə bilmədi. Bir qədər sonra yenidən cəhd edin.";
         finalizeMessage(
           assistantMessageId,
-          "Xəta baş verdi: Normativ aktların araşdırılması zamanı serverlə əlaqə qurulmadı. Zəhmət olmasa tənzimləmə parametrlərini yoxlayın.",
+          `Xəta baş verdi: ${detail}`,
           [],
           undefined,
           undefined,
